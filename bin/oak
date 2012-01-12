@@ -1,0 +1,111 @@
+#!/usr/bin/env ruby
+
+require 'oaktree'
+
+APP_NAME = 'oaktree'
+
+## Generate a new blog_spec and create 'source' and 'public' directories
+def init_blog
+  IO.write 'blog_spec', OakTree::Specification.new.export_string
+  Dir.mkdir 'source'
+  Dir.mkdir 'public'
+end
+
+## Show the version
+def show_version
+  version = '<no version>'
+  url = '<no url>'
+  
+  spec = Gem::Specification.find_all_by_name 'oaktree'
+  if not spec.empty? then
+    version = spec[0].version
+    url = spec[0].homepage
+  end
+  
+  puts "#{APP_NAME}, version #{version} - #{url}"
+end
+
+## Show the help text for oak
+def show_help
+  show_version
+  puts <<-EOH
+oak <command> ...
+
+Commands
+-----------------------------------------------------------------------------
+post [title]    Creates a new post.  If no title is given, the post is given
+                the title "Untitled".
+  
+init            Creates a 'blog_spec' file and required directories in the
+                working directory if blog_spec doesn't already exist.
+                  
+help            Shows this help text.
+
+Copyright (c) 2008-#{DateTime.now.year} Noel R. Cower
+  EOH
+end
+
+## Generate a new post file for the blog
+def new_post blog, title
+  today = DateTime.now
+  slug = title.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
+  timeslug = today.strftime '%Y-%m-%d'
+  file = "#{blog.blogspec.blog_root}/source/#{timeslug}_#{slug}.md"
+  head = <<-HEADSTR
+title: Title
+link: 
+time: #{today.strftime '%Y-%m-%d %H:%M:%S %z'}
+tags: 
+categories: 
+----
+
+Body
+HEADSTR
+  
+  IO.write file, head
+end
+
+
+def dispatch_command cmd, args, blog
+  
+  case cmd.to_sym
+    
+    when :post
+      raise "Not in a blog directory" if blog.nil?
+    
+      title = 'Untitled'
+      title = args[0] unless args.empty?
+      new_post blog, title
+      
+    when :init
+      if not blog.nil? then
+        puts "blog_spec already exists"
+        exit 0
+      end
+      
+      init_blog
+    
+    when :version
+      show_version
+    
+    when :help
+      show_help
+      
+    else 
+      show_help
+  
+  end
+  
+end
+
+
+# Main logic
+
+blog = nil
+blog = OakTree.new OakTree::Specification.from_file 'blog_spec' if File.exists? 'blog_spec'
+
+if ARGV.empty? then
+  show_help
+else
+  dispatch_command ARGV[0], ARGV[1..ARGV.length], blog
+end
