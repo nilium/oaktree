@@ -2,61 +2,91 @@
 
 require 'oaktree'
 
-APP_NAME = 'oaktree'
+# Constants
 
-## Generate a new blog_spec and create 'source' and 'public' directories
-def init_blog
-  IO.write 'blog_spec', OakTree::Specification.new.export_string
-  Dir.mkdir 'source'
-  Dir.mkdir 'public'
+APP_NAME = 'oak'
+
+GEM_NAME = 'oaktree'
+
+HELP_TEXT = <<EOH
+#{APP_NAME} <command> ...
+
+COMMANDS
+* newpost [title]
+    Creates a new post.  If no title is given, the post's title is "Untitled".
+    The new post is placed in the blog's source/ directory
+  
+* init [dir]
+    Creates a 'blog_spec' file and required directories in the given directory
+    if blog_spec doesn't already exist.  If no directory is provided, oak uses
+    the working directory.
+
+* version
+    Shows the version of oak and the oaktree gem.
+
+* help
+    Shows this help text.
+
+EOH
+
+
+# Commands
+
+# Generate a new blog_spec and create 'source' and 'public' directories under
+# the given directory.
+def init_blog directory
+  Dir.chdir(directory) { |path|
+    if File.exists? 'blog_spec' then
+      puts "blog_spec already exists in #{directory}"
+      exit 1
+    end
+    
+    IO.write 'blog_spec', OakTree::Specification.new.export_string
+    Dir.mkdir 'source'
+    Dir.mkdir 'public'
+  }
 end
 
-## Show the version
+
+# Show the version
 def show_version
   version = '<no version>'
   url = '<no url>'
   
-  spec = Gem::Specification.find_all_by_name 'oaktree'
-  if not spec.empty? then
-    version = spec[0].version
-    url = spec[0].homepage
+  # get version/homepage if possible
+  begin
+    spec = Gem::Specification.find_by_name GEM_NAME
+    version = spec.version
+    url = spec.homepage
+  rescue
+    # do nothing
   end
   
-  puts "#{APP_NAME}, version #{version} - #{url}"
+  puts "#{GEM_NAME} version #{version} - #{url}"
 end
 
-## Show the help text for oak
+
+# Show the help text for oak
 def show_help
+  puts HELP_TEXT
   show_version
-  puts <<-EOH
-oak <command> ...
-
-Commands
------------------------------------------------------------------------------
-post [title]    Creates a new post.  If no title is given, the post is given
-                the title "Untitled".
-  
-init            Creates a 'blog_spec' file and required directories in the
-                working directory if blog_spec doesn't already exist.
-                  
-help            Shows this help text.
-
-Copyright (c) 2008-#{DateTime.now.year} Noel R. Cower
-  EOH
 end
 
-## Generate a new post file for the blog
-def new_post blog, title
+
+# Generate a new post file for the blog
+def new_post spec, title
+  title = title.gsub(/[\n\t]+/, '').strip
+  
   today = DateTime.now
-  slug = title.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
+  
+  titleslug = title.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
   timeslug = today.strftime '%Y-%m-%d'
-  file = "#{blog.blogspec.blog_root}/source/#{timeslug}_#{slug}.md"
-  head = <<-HEADSTR
-title: Title
-link: 
+  
+  file = "#{spec.blog_root}/source/#{timeslug}_#{titleslug}.md"
+  
+  head = <<HEADSTR
+title: #{title}
 time: #{today.strftime '%Y-%m-%d %H:%M:%S %z'}
-tags: 
-categories: 
 ----
 
 Body
@@ -66,32 +96,39 @@ HEADSTR
 end
 
 
-def dispatch_command cmd, args, blog
+# Command selector majigger
+def dispatch_command cmd, *args
+  
+  spec = (File.exists? 'blog_spec') ? (OakTree::Specification.from_file 'blog_spec') : nil
   
   case cmd.to_sym
     
-    when :post
-      raise "Not in a blog directory" if blog.nil?
+    when :newpost
+      raise "Not in a blog directory" unless File.exists? 'blog_spec'
     
       title = 'Untitled'
-      title = args[0] unless args.empty?
-      new_post blog, title
+      title = args.join ' ' unless args.empty?
+      new_post spec, title
       
-    when :init
-      if not blog.nil? then
-        puts "blog_spec already exists"
-        exit 0
-      end
-      
-      init_blog
+    when :init      
+      directory = '.'
+      directory = args[0] unless args.empty?
+      init_blog directory
     
     when :version
       show_version
     
     when :help
       show_help
+    
+    when :sync
+      raise "No blog_spec found" if spec.nil?
       
-    else 
+      blog = OakTree.new spec
+      
+    else
+      puts "Unrecognized command '#{cmd}'\n\n"
+      
       show_help
   
   end
@@ -101,11 +138,8 @@ end
 
 # Main logic
 
-blog = nil
-blog = OakTree.new OakTree::Specification.from_file 'blog_spec' if File.exists? 'blog_spec'
-
 if ARGV.empty? then
   show_help
 else
-  dispatch_command ARGV[0], ARGV[1..ARGV.length], blog
+  dispatch_command ARGV[0], *ARGV[1..ARGV.length]
 end
