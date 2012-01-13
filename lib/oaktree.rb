@@ -20,7 +20,7 @@ class OakTree
   def sync_posts
     entries = Dir.glob("#{@spec.blog_root}/source/**/*.md")
     entries.each { |entry|
-      @posts << Post.new blog, entry
+      @posts << Post.new(entry, self)
     }
   end
   
