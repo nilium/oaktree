@@ -22,6 +22,10 @@ class OakTree
     entries.each { |entry|
       @posts << Post.new(entry, self)
     }
+
+    @posts.sort! { |left, right|
+      left.time <=> right.time
+    }
   end
   
 end
