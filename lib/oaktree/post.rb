@@ -26,7 +26,6 @@ class OakTree::Post
   def initialize path, spec = nil
     @source_path = path
     @spec = spec
-    @last_modified = Time.at 0
     
     sync_changes true
   end
@@ -65,10 +64,6 @@ class OakTree::Post
     sync_changes
     
     @slug
-  end
-  
-  def mtime
-    @last_modified
   end
   
   private
