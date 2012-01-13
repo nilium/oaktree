@@ -12,19 +12,19 @@ HELP_TEXT = <<EOH
 #{APP_NAME} <command> ...
 
 COMMANDS
-* newpost [title]
+* -n, newpost [title]
     Creates a new post.  If no title is given, the post's title is "Untitled".
     The new post is placed in the blog's source/ directory
   
-* init [dir]
+* -i, init [dir]
     Creates a 'blog_spec' file and required directories in the given directory
     if blog_spec doesn't already exist.  If no directory is provided, oak uses
     the working directory.
 
-* version
+* -v, version
     Shows the version of oak and the oaktree gem.
 
-* help
+* -h, help
     Shows this help text.
 
 EOH
@@ -101,31 +101,31 @@ def dispatch_command cmd, *args
   
   spec = (File.exists? 'blog_spec') ? (OakTree::Specification.from_file 'blog_spec') : nil
   
-  case cmd.to_sym
+  case cmd
     
-    when :newpost
+    when 'newpost', '-n'
       raise "Not in a blog directory" unless File.exists? 'blog_spec'
     
       title = 'Untitled'
       title = args.join ' ' unless args.empty?
       new_post spec, title
       
-    when :init      
+    when 'init', '-i'
       directory = '.'
       directory = args[0] unless args.empty?
       init_blog directory
     
-    when :version
+    when 'version', '-v'
       show_version
     
-    when :help
+    when 'help', '-h'
       show_help
     
-    when :sync
+    when 'sync'
       raise "No blog_spec found" if spec.nil?
       
       blog = OakTree.new spec
-      
+    
     else
       puts "Unrecognized command '#{cmd}'\n\n"
       
