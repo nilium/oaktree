@@ -23,7 +23,7 @@ class OakTree
   def sync_posts
     entries = Dir.glob("#{@spec.blog_root}/source/**/*.md")
     entries.each { |entry|
-      @posts << Post.new(entry, self)
+      @posts << Post.new(entry, self) unless @posts.index { |post| post.source_path === entry }
     }
 
     @posts.sort! { |left, right|
