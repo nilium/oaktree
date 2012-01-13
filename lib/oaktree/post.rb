@@ -1,3 +1,5 @@
+require 'digest'
+
 class OakTree::Post
   @@METADATA_SEPARATOR = /^-{3,}\s*$/
   @@METADATA_ITEM = /^\s*(?<key>\w+)\s*:\s*(?<value>.*?)\s*$/
@@ -18,7 +20,7 @@ class OakTree::Post
   @tags = []
   
   @spec = nil
-  @last_modified = nil
+  @md5 = ''
   
   # Optionally takes an OakTree::Specification object as the spec.
   def initialize path, spec = nil
@@ -74,19 +76,20 @@ class OakTree::Post
   def sync_changes force = false
     raise "Source file '#{@source_path}' no longer exists" unless File.exists? @source_path
     
-    modified_time = File.mtime @source_path
+    cur_md5 = Digest::MD5.hexdigest File.open(@source_path, 'r') { |io| io.read }
     
     if not force then
-      if not @public_path.nil? and File.exists? @public_path then
-        public_mtime = File.mtime @public_path
-        return if modified_time <= public_mtime
-      end
+      # check if the source differs from what was last checked
+      sources_differ = !(cur_md5 === @md5)
+      # also check if the public HTML is older than the source (meaning the
+      # public HTML needs to be regenerated, probably)
+      sources_differ = (sources_differ or File.mtime(@public_path) < File.mtime(@source_path)) if File.exists? @public_path
       
-      return if modified_time <= @last_modified
+      return unless sources_differ
     end
     
-    source = IO.read @source_path
-    @last_modified = modified_time
+    source = File.open(@source_path, 'r') { |io| io.read }
+    @md5 = cur_md5
     
     @slug = nil
     @categories = []
@@ -101,7 +104,6 @@ class OakTree::Post
       match = line.match @@METADATA_ITEM
       
       if match.nil? then
-        puts "Unmatched line: '#{line}' in #{@source_path}"
         next
       end
       

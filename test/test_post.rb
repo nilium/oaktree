@@ -1,6 +1,5 @@
 require 'test/unit'
 require 'oaktree'
-require 'tempfile'
 
 POST_CONTENT_FIRST = <<EOT
 title: first
@@ -27,31 +26,36 @@ EOT
 
 class PostTest < Test::Unit::TestCase
   def test_sync
-    file = Tempfile.new 'post'
+    tempfile = "post.temp.#{DateTime.now.strftime '%F_%Q'}.md"
+
     begin
-      file.close false
-      path = file.path
-      
-      IO.write file.path, POST_CONTENT_FIRST
-      
-      post = OakTree::Post.new file.path
-      
-      assert_equal post.title, 'first'
-      assert_equal post.link, 'http://localhost'
-      assert_equal post.tags, ['first', 'second', 'third']
-      assert_equal post.categories, ['birds', 'fish']
-      assert_equal post.time, DateTime.parse('2000-01-01 00:00:00 +0700')
-      
-      IO.write file.path, POST_CONTENT_SECOND
-      
-      assert_equal post.title, 'second'
-      assert_equal post.link, 'http://127.0.0.1'
-      assert_equal post.tags, ['fourth', 'fifth', 'sixth']
-      assert_equal post.categories, ['dogs', 'cats']
-      assert_equal post.time, DateTime.parse('2001-01-01 00:00:00 +0700')
-      
+
+      File.open(tempfile, 'w') { |io|
+        io.write POST_CONTENT_FIRST
+      }
+
+      post = OakTree::Post.new tempfile
+
+      assert_equal 'first', post.title
+      assert_equal 'http://localhost', post.link
+      assert_equal ['first', 'second', 'third'], post.tags
+      assert_equal ['birds', 'fish'], post.categories
+      assert_equal DateTime.parse('2000-01-01 00:00:00 +0700'), post.time
+
+      File.open(tempfile, 'w') { |io|
+        io.write POST_CONTENT_SECOND
+      }
+
+      assert_equal 'second', post.title
+      assert_equal 'http://127.0.0.1', post.link
+      assert_equal ['fourth', 'fifth', 'sixth'], post.tags
+      assert_equal ['dogs', 'cats'], post.categories
+      assert_equal DateTime.parse('2001-01-01 00:00:00 +0700'), post.time
+
     ensure
-      file.unlink
+
+      File.unlink tempfile
+
     end
   end
 end
