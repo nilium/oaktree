@@ -77,12 +77,14 @@ class OakTree::Specification
     self.title = 'Title'
     self.description = 'A brief description of this blog'
     self.base_url = 'http://localhost'
-    self.post_path = '/post'
-    self.tag_path = '/tag'
-    self.category_path = '/category'
+    self.post_path = 'post'
+    self.tag_path = 'tag'
+    self.category_path = 'category'
     self.blog_root = Dir.getwd
     
     yield self if block_given?
+    
+    @blog_root = File.expand_path @blog_root
   end
   
   def export_string
