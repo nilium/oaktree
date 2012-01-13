@@ -50,19 +50,9 @@ end
 
 # Show the version
 def show_version
-  version = '<no version>'
-  url = '<no url>'
+  version = OakTree::VERSION
   
-  # get version/homepage if possible
-  begin
-    spec = Gem::Specification.find_by_name GEM_NAME
-    version = spec.version
-    url = spec.homepage
-  rescue
-    # do nothing
-  end
-  
-  puts "#{GEM_NAME} version #{version} - #{url}"
+  puts "#{GEM_NAME} version #{version}"
 end
 
 
