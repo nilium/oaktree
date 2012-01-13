@@ -3,6 +3,8 @@ require 'fileutils'
 
 # The enormous blog class
 class OakTree
+  
+  VERSION = '0.0.1pre'
 
   def initialize spec
     @spec = spec
