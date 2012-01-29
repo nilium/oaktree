@@ -78,7 +78,7 @@ class OakTree::Post
       sources_differ = !(cur_md5 === @md5)
       # also check if the public HTML is older than the source (meaning the
       # public HTML needs to be regenerated, probably)
-      sources_differ = (sources_differ or File.mtime(@public_path) < File.mtime(@source_path)) if File.exists? @public_path
+      sources_differ = (sources_differ || File.mtime(@public_path) < File.mtime(@source_path)) if File.exists? @public_path
       
       return unless sources_differ
     end

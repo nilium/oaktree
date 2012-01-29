@@ -34,7 +34,7 @@ class OakTree::Specification
         io.each_line { |line|
           line = line.strip
           
-          next if line.empty? or line.start_with? '#'
+          next if line.empty? || line.start_with? '#'
           
           match = line.match @@KEY_VALUE_PATTERN
           
