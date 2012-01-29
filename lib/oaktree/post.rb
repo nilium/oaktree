@@ -69,7 +69,7 @@ class OakTree::Post
   private
   
   def sync_changes force = false
-    raise "Source file '#{@source_path}' no longer exists" unless File.exists? @source_path
+    raise "Source file '#{@source_path}' does not exist" unless File.exists? @source_path
     
     cur_md5 = Digest::MD5.hexdigest File.open(@source_path, 'r') { |io| io.read }
     
