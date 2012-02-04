@@ -93,15 +93,15 @@ class OakTree::Specification
   def export_string
     <<-EOT
 # metadata
-title:         #{@title}
-description:   #{@description}
+title:  #{@title}
+description: #{@description}
 
 # public URL
-base_url:      #{@base_url}
+base_url:  #{@base_url}
 
 # public content paths
-post_path:     #{@post_path}
-tag_path:      #{@tag_path}
+post_path: #{@post_path}
+tag_path:  #{@tag_path}
 category_path: #{@category_path}
     EOT
   end
