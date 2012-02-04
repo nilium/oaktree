@@ -26,6 +26,8 @@ class OakTree::Specification
   # don't exist, they'll be created when generating the blog.
   # This cannot be changed.
   attr_reader :blog_root
+  # The number of posts displayed per page
+  attr_accessor :posts_per_page
   
   # Loads a specification from a file.
   def self.from_file(path)
@@ -63,6 +65,8 @@ class OakTree::Specification
               spec.tag_path = value
             when :category_path
               spec.category_path = value
+            when :posts_per_page
+              spec.posts_per_page = value.to_i
             else
               puts "Invalid name for entry in blog_spec: #{line}"
           end
@@ -84,6 +88,7 @@ class OakTree::Specification
     self.post_path = 'post'
     self.tag_path = 'tag'
     self.category_path = 'category'
+    self.posts_per_page = 10
     
     yield self if block_given?
     
@@ -95,6 +100,7 @@ class OakTree::Specification
 # metadata
 title:  #{@title}
 description: #{@description}
+posts_per_page: 10
 
 # public URL
 base_url:  #{@base_url}
