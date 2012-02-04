@@ -17,18 +17,31 @@ class OakTree
   def blogspec
     @spec
   end
+  
+  def posts
+    sync_posts
+    return @posts
+  end
 
   private
 
   def sync_posts
     entries = Dir.glob("#{@spec.blog_root}/source/**/*.md")
+    altered = false
     entries.each { |entry|
-      @posts << Post.new(entry, self) unless @posts.index { |post| post.source_path === entry }
+      next if @posts.index { |post| post.source_path === entry }
+      
+      @posts << Post.new(entry, self)
+      altered = true
     }
 
+    return unless altered
+    
     @posts.sort! { |left, right|
       left.time <=> right.time
     }
+    
+    return self
   end
 
 end
