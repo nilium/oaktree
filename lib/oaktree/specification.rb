@@ -11,7 +11,8 @@ class OakTree::Specification
   attr_accessor :title
   # A description of the blog
   attr_accessor :description
-  # The base URL of the blog (i.e., http://localhost/blog)
+  # The base URL of the blog (i.e., http://localhost/blog) - should not have a
+  # trailing slash.
   attr_accessor :base_url
   # The post path (i.e., the subdirectory where posts are stored).
   attr_accessor :post_path
