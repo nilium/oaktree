@@ -22,6 +22,8 @@ class OakTree::Specification
   # don't exist, they'll be created when generating the blog.
   # This cannot be changed.
   attr_reader :blog_root
+  # The name of the blog's author (currently assumes a single author)
+  attr_accessor :blog_author
   # The number of posts displayed per page
   attr_accessor :posts_per_page
   
@@ -57,6 +59,8 @@ class OakTree::Specification
               spec.base_url = value
             when :post_path
               spec.post_path = value
+            when :blog_author
+              spec.blog_author = value
             when :posts_per_page
               spec.posts_per_page = value.to_i
             else
@@ -78,6 +82,7 @@ class OakTree::Specification
     self.description = 'A brief description of this blog'
     self.base_url = 'http://localhost'
     self.post_path = 'post'
+    self.blog_author = "Someone"
     self.posts_per_page = 10
     
     yield self if block_given?
@@ -90,6 +95,7 @@ class OakTree::Specification
 # metadata
 title:  #{@title}
 description: #{@description}
+author: #{@blog_author}
 posts_per_page: 10
 
 # public URL
