@@ -16,10 +16,6 @@ class OakTree::Specification
   attr_accessor :base_url
   # The post path (i.e., the subdirectory where posts are stored).
   attr_accessor :post_path
-  # The tag path, where indices of tagged posts are stored.
-  attr_accessor :tag_path
-  # The category path, where indices of categorized posts are stored.
-  attr_accessor :category_path
   # The blog root, where files are stored locally.
   # Beneath this directory, there should be /source and /public directories,
   # where post sources and the blog output, respectively, are stored. If these
@@ -61,10 +57,6 @@ class OakTree::Specification
               spec.base_url = value
             when :post_path
               spec.post_path = value
-            when :tag_path
-              spec.tag_path = value
-            when :category_path
-              spec.category_path = value
             when :posts_per_page
               spec.posts_per_page = value.to_i
             else
@@ -86,8 +78,6 @@ class OakTree::Specification
     self.description = 'A brief description of this blog'
     self.base_url = 'http://localhost'
     self.post_path = 'post'
-    self.tag_path = 'tag'
-    self.category_path = 'category'
     self.posts_per_page = 10
     
     yield self if block_given?
@@ -107,8 +97,6 @@ base_url:  #{@base_url}
 
 # public content paths
 post_path: #{@post_path}
-tag_path:  #{@tag_path}
-category_path: #{@category_path}
     EOT
   end
 end
