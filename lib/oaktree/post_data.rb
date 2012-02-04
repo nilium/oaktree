@@ -1,6 +1,8 @@
 require 'digest'
 
-class OakTree::Post
+class OakTree; end
+
+class OakTree::PostData
   @@METADATA_SEPARATOR = /^-{3,}\s*$/
   @@METADATA_ITEM = /^\s*(?<key>\w+)\s*:\s*(?<value>.*?)\s*$/
   
@@ -24,6 +26,7 @@ class OakTree::Post
   
   # Optionally takes an OakTree::Specification object as the spec.
   def initialize path, spec = nil
+    @last_modified = DateTime.now
     @source_path = path
     @spec = spec
     
@@ -62,8 +65,17 @@ class OakTree::Post
   
   def slug
     sync_changes
-    
     @slug
+  end
+  
+  def content
+    sync_changes
+    @content
+  end
+  
+  def last_modified
+    sync_changes
+    @last_modified
   end
   
   private
@@ -84,6 +96,7 @@ class OakTree::Post
     end
     
     source = File.open(@source_path, 'r') { |io| io.read }
+    source_split = source.rpartition @@METADATA_SEPARATOR
     @md5 = cur_md5
     
     @slug = nil
@@ -92,10 +105,11 @@ class OakTree::Post
     @link = ''
     @title = nil
     @time = nil
+    @content = nil
     
-    source.lines.each { |line|
-      break if line =~ @@METADATA_SEPARATOR
-      
+    split_index = 0
+    
+    source_split[0].lines.each { |line|
       match = line.match @@METADATA_ITEM
       
       if match.nil? then
@@ -136,7 +150,11 @@ class OakTree::Post
       @slug = @title.gsub(/[\n\t]+/, '').strip.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
     end
     
+    @content = source_split[2]
+    
     @public_path = "public/#{@time.strftime '%Y/%m'}/#{@slug}.html"
     @public_path = "#{@spec.blog_root}/#{@public_path}" unless @spec.nil?
+    
+    @last_modified = DateTime.now
   end
 end
