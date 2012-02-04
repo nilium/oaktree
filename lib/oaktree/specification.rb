@@ -1,5 +1,7 @@
 require 'date'
 
+class OakTree; end
+
 # Specifications for the blog, operates similar to Gem::Specification.
 # URLs and paths are strings and should not end in a slash.
 class OakTree::Specification
@@ -34,7 +36,7 @@ class OakTree::Specification
         io.each_line { |line|
           line = line.strip
           
-          next if line.empty? || line.start_with? '#'
+          next if line.empty? || line.start_with?('#')
           
           match = line.match @@KEY_VALUE_PATTERN
           
