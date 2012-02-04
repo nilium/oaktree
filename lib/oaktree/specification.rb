@@ -70,6 +70,8 @@ class OakTree::Specification
         
       }
       
+      Dir.chdir(File.dirname(path))
+      
     }
   end
   
@@ -101,10 +103,6 @@ base_url:      #{@base_url}
 post_path:     #{@post_path}
 tag_path:      #{@tag_path}
 category_path: #{@category_path}
-
-# root blog directory (where source/ and public/ go)
-# changing this is probably unwise
-blog_root:     #{@blog_root}
     EOT
   end
 end
