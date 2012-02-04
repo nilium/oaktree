@@ -23,7 +23,8 @@ class OakTree::Specification
   # Beneath this directory, there should be /source and /public directories,
   # where post sources and the blog output, respectively, are stored. If these
   # don't exist, they'll be created when generating the blog.
-  attr_accessor :blog_root
+  # This cannot be changed.
+  attr_reader :blog_root
   
   # Loads a specification from a file.
   def self.from_file(path)
@@ -61,8 +62,6 @@ class OakTree::Specification
               spec.tag_path = value
             when :category_path
               spec.category_path = value
-            when :blog_root
-              spec.blog_root = value
             else
               puts "Invalid name for entry in blog_spec: #{line}"
           end
@@ -82,11 +81,10 @@ class OakTree::Specification
     self.post_path = 'post'
     self.tag_path = 'tag'
     self.category_path = 'category'
-    self.blog_root = Dir.getwd
     
     yield self if block_given?
     
-    @blog_root = File.expand_path @blog_root
+    @blog_root = File.expand_path Dir.getwd
   end
   
   def export_string
