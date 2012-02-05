@@ -35,6 +35,11 @@ class OakTree::PostData
     sync_changes true
   end
   
+  def permalink
+    sync_changes
+    "#{@spec.base_url}/#{@spec.post_path}/#{@time.strftime '%Y/%m'}/#{@slug}.html"
+  end
+  
   def public_path
     sync_changes
     @public_path
