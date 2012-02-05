@@ -9,6 +9,9 @@ class OakTree
     Mustache.template_path = 'template'
     
     autoload :Base, 'oaktree/template/base'
+    autoload :PostArchive, 'oaktree/template/post_archive'
+    autoload :Post, 'oaktree/template/post'
+    autoload :Blog, 'oaktree/template/blog'
     
   end # Template
   
