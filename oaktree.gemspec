@@ -18,7 +18,6 @@ Gem::Specification.new { |spec|
   spec.executables << 'oak'
   spec.files = FileList['lib/**/*.rb',
                         'bin/*',
-                        'template/**/*.erb',
                         '[A-Z]*',
                         'test/**/*'].to_a
   
