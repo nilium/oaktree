@@ -22,4 +22,6 @@ Gem::Specification.new { |spec|
                         '[A-Z]*',
                         'test/**/*'].to_a
   
+  spec.add_dependency 'mustache', '>= 0.99'
+  spec.add_dependency 'kramdown', '>= 0.13'
 }
