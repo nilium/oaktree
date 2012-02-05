@@ -41,7 +41,7 @@ class OakTree
     return unless altered
     
     @posts.sort! { |left, right|
-      left.time <=> right.time
+      right.time <=> left.time
     }
     
     return self
