@@ -152,7 +152,7 @@ class OakTree::PostData
       @slug = @title.gsub(/[\n\t]+/, '').strip.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
     end
     
-    @content = source_split[2]
+    @content = source_split[2].rstrip.reverse!.chomp!.reverse!
     
     @public_path = "public/#{@time.strftime '%Y/%m'}/#{@slug}.html"
     @public_path = "#{@spec.blog_root}/#{@public_path}" unless @spec.nil?
