@@ -89,6 +89,7 @@ class OakTree
     
       @blog_root = File.expand_path Dir.getwd
     
+      @post_path = "/#{@post_path}" if ! @post_path.empty? && ! @post_path.start_with?('/')
     end
   
     def export_string
