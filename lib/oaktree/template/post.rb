@@ -48,8 +48,8 @@ class OakTree
   
       def content
         if @content.nil? || @mtime < @post.last_modified
-          document = Kramdown::Document.new(@post.content)
-          @content, warnings = OakTree::Kramdown::OakHtml.convert(document.root, :auto_id_prefix => @post.time.strftime('%Y_%m_%d_'))
+          document = ::Kramdown::Document.new(@post.content)
+          @content, warnings = ::OakTree::Kramdown::OakHtml.convert(document.root, :auto_id_prefix => @post.time.strftime('%Y_%m_%d_'))
           puts warnings unless warnings.empty?
         end
     
