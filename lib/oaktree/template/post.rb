@@ -67,14 +67,6 @@ class OakTree
       def slug
         @post.slug
       end
-  
-      def tags
-        @post.tags
-      end
-  
-      def categories
-        @post.categories
-      end
       
     end # Post
     
