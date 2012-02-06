@@ -22,9 +22,6 @@ class OakTree
       @link = nil       # A link the post leads to other than its own permalink
       @permalink = nil
   
-      @categories = []
-      @tags = []
-  
       @md5 = ''
     
       @last_modified = DateTime.now
@@ -59,16 +56,6 @@ class OakTree
     def time
       sync_changes
       @time
-    end
-  
-    def tags
-      sync_changes
-      @tags
-    end
-  
-    def categories
-      sync_changes
-      @categories
     end
   
     def slug
@@ -112,8 +99,6 @@ class OakTree
       @md5 = cur_md5
     
       @slug = nil
-      @categories = []
-      @tags = []
       @link = ''
       @title = nil
       @time = nil
@@ -140,12 +125,6 @@ class OakTree
           
           when :link
             @link = value.freeze
-          
-          when :tags
-            @tags = value.split(',').map { |item| item.strip.freeze } .freeze
-          
-          when :categories
-            @categories = value.split(',').map { |item| item.strip.freeze } .freeze
           
           when :slug
             @slug = value.freeze
