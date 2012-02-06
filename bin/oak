@@ -14,19 +14,27 @@ HELP_TEXT = <<EOH
 
 COMMANDS
 * -n, newpost [title]
-    Creates a new post.  If no title is given, the post's title is "Untitled".
-    The new post is placed in the blog's source/ directory
+  Creates a new post.  If no title is given, the post's title is "Untitled".
+  The new post is placed in the blog's source/ directory
   
 * -i, init [dir]
-    Creates a 'blog_spec' file and required directories in the given directory
-    if blog_spec doesn't already exist.  If no directory is provided, oak uses
-    the working directory.
+  Creates a 'blog_spec' file and required directories in the given directory
+  if blog_spec doesn't already exist.  If no directory is provided, oak uses
+  the working directory.
+
+* -s, sync
+  Builds HTML files for changed posts.  This does not rebuild files following
+  template changes.  If you've made changes to templates, you should use the
+  rebuild command.
+
+* -r, rebuild
+  Builds HTML files for all posts, regardless of whether they've been changed.
 
 * -v, version
-    Shows the version of oak and the oaktree gem.
+  Shows the version of oak and the oaktree gem.
 
 * -h, help
-    Shows this help text.
+  Shows this help text.
 
 EOH
 
@@ -125,10 +133,10 @@ def dispatch_command cmd, *args
     when 'help', '-h'
       show_help
     
-    when 'rebuild'
+    when 'rebuild', '-r'
       sync_changes spec, true
     
-    when 'sync'
+    when 'sync', '-s'
       sync_changes spec, false
     
     else
