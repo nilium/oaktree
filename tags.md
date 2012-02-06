@@ -104,8 +104,8 @@ A section tag providing access to all posts on the current page. You can use thi
 
   {{#posts}}
    <article>
-    <h1><a href="{{url}}">{{title}}</a></h1>
-    {{content}}
+	<h1><a href="{{url}}">{{title}}</a></h1>
+	{{content}}
    </article>
   {{/posts}}
 
@@ -130,9 +130,9 @@ This section tag provides access to all `PostArchive` contexts from newest to ol
   <ul>
    {{#archives}}
    <li>
-    <a href="{{permalink}}">
-     {{#date}}%B %Y{{/date}}
-    </a>
+	<a href="{{permalink}}">
+	 {{#date}}%B %Y{{/date}}
+	</a>
    </li>
    {{/archives}}
   </ul>
@@ -141,14 +141,14 @@ Which might produce something like the following:
 
   <ul>
    <li>
-    <a href="/posts/2012/2.html">
-     February 2012
-    </a>
+	<a href="/posts/2012/2.html">
+	 February 2012
+	</a>
    </li>
    <li>
-    <a href="/posts/2012/3.html">
-     March 2012
-    </a>
+	<a href="/posts/2012/3.html">
+	 March 2012
+	</a>
    </li>
   </ul>
 
