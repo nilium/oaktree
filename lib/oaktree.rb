@@ -3,6 +3,10 @@ require 'fileutils'
 
 require 'oaktree/specification'
 require 'oaktree/post_data'
+require 'oaktree/template'
+
+# Probably violating some rule on naming by calling this oaktree.rb instead of
+# oak_tree.rb.  Oh well.
 
 # The central blog class (also just called a tree from time to time)
 class OakTree
