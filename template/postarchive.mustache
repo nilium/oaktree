@@ -1,0 +1,9 @@
+<div id="archives">
+  <header>Archives</header>
+{{#archives}}
+  {{^open?}}<a href="{{permalink}}">{{/open?}}
+    {{#date}}%B %Y{{/date}}
+  {{^open?}}</a>{{/open?}}
+  {{#previous_archive}}, {{/previous_archive}}
+{{/archives}}
+</div>

@@ -1,0 +1,11 @@
+{{#paged?}}
+<div id="nav-bar">
+  {{#has_next?}}<a href="{{next_url}}">
+    &#x2190; {{#archive}}{{#next_archive}}{{#date}}%B %Y{{/date}}{{/next_archive}}{{/archive}}{{^archive}}newer{{/archive}}
+  </a>{{/has_next?}}
+  {{#has_next?}}{{#has_previous?}} &mdash; {{/has_previous?}}{{/has_next?}}
+  {{#has_previous?}}<a href="{{previous_url}}">
+    {{#archive}}{{#previous_archive}}{{#date}}%B %Y{{/date}}{{/previous_archive}}{{/archive}}{{^archive}}older{{/archive}} &#x2192;
+  </a>{{/has_previous?}}
+</div>
+{{/paged?}}
