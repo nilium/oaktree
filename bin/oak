@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'oaktree'
+require 'fileutils'
 
 # Constants
 
@@ -86,6 +87,14 @@ HEADSTR
 end
 
 
+def sync_changes spec, force
+  raise "No blog_spec found" if spec.nil?
+      
+  blog = OakTree.new spec
+  blog.generate force
+end
+
+
 # Command selector majigger
 def dispatch_command cmd, *args
   
@@ -111,10 +120,11 @@ def dispatch_command cmd, *args
     when 'help', '-h'
       show_help
     
+    when 'rebuild'
+      sync_changes spec, true
+    
     when 'sync'
-      raise "No blog_spec found" if spec.nil?
-      
-      blog = OakTree.new spec
+      sync_changes spec, false
     
     else
       puts "Unrecognized command '#{cmd}'\n\n"
