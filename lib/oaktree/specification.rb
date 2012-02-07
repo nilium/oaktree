@@ -26,6 +26,8 @@ class OakTree
     attr_accessor :author
     # The number of posts displayed per page
     attr_accessor :posts_per_page
+    # Whether the timeline is reversed
+    attr_accessor :reversed
   
     # Loads a specification from a file.
     def self.from_file(path)
@@ -63,6 +65,8 @@ class OakTree
                 spec.author = value
               when :posts_per_page
                 spec.posts_per_page = value.to_i
+              when :reversed
+                spec.reversed = value.downcase =~ /^(true|1|yes)$/ ? true : false
               else
                 puts "Invalid name for entry in blog_spec: #{line}"
             end

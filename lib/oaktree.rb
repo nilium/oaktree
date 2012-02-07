@@ -91,7 +91,7 @@ class OakTree
     return unless altered
     
     @posts.sort! { |left, right|
-      right.time <=> left.time
+      @spec.reversed ? left.time <=> right.time : right.time <=> left.time
     }
     
     return self
