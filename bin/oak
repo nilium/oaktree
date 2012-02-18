@@ -38,21 +38,82 @@ COMMANDS
 
 EOH
 
+BLOG_TEMPLATE = <<EOT
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>{{blog_title}}{{#post}} &racquo; {{title}}{{/post}}</title>
+  </head>
+  <body>
+
+    <div id="header">
+      <h1 id="blog-title"><a href="{{blog_url}}/index.html">{{blog_title}}</a></h1>
+      <p>
+        <span class="blog-description">{{blog_description}}<br/></span>
+        <span class="blog-byline">By {{blog_author}}</span>
+      </p>
+    </div><!-- title -->
+
+    <div id="posts">
+      {{#posts}}
+      <div class="post">
+        <div class="post-header">
+          <h2 class="post-title">
+            <a href="{{url}}">{{#source_link?}}&#x2192; {{/source_link?}}{{title}}</a>
+          </h2>
+          <span class="post-time">{{#time}}%-d %B %Y{{/time}}</span>
+        </div><!-- post-header -->
+        <div class="post-body">
+          {{{content}}}
+        </div><!-- post-body -->
+      </div><!-- post: {{title}} -->
+      {{/posts}}
+    </div><!-- posts -->
+
+    <div id="archives">
+      <h4>Archives</h4>
+      <ul>
+      {{#archives}}
+        <li>
+          {{^open?}}<a href="{{permalink}}">{{/open?}}
+            {{#date}}%B %Y{{/date}}
+          {{^open?}}</a>{{/open?}}
+        </li>
+      {{/archives}}
+      </ul>
+    </div><!-- archives -->
+
+    <div class="copyright">
+      Copyright &copy; {{#today}}%Y{{/today}} {{blog_author}}. All rights reserved.
+      Made with <a href="https://github.com/nilium/oaktree">OakTree</a>.
+    </div><!-- copyright -->
+
+  </body>
+</html>
+EOT
+
 
 # Commands
 
 # Generate a new blog_spec and create 'source' and 'public' directories under
 # the given directory.
 def init_blog directory
+  if ! (File.exists?(directory) && File.directory?(directory)) && directory != '.'
+    FileUtils.mkdir_p directory
+  end
+  
   Dir.chdir(directory) { |path|
     if File.exists? 'blog_spec' then
-      puts "blog_spec already exists in #{directory}"
-      exit 1
+      raise "blog_spec already exists in #{directory}"
     end
     
-    IO.write 'blog_spec', OakTree::Specification.new.export_string
     Dir.mkdir 'source'
     Dir.mkdir 'public'
+    Dir.mkdir 'template'
+    
+    File.open('blog_spec', 'w') { |io| io.write OakTree::Specification.new.export_string }
+    File.open('template/blog.mustache', 'w') { |io| io.write BLOG_TEMPLATE }
   }
 end
 
