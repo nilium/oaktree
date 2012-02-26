@@ -87,7 +87,7 @@ class OakTree
             when :archive
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)
-              path << "#{archdate.strftime(@@POST_DATE_PATH)}.html"
+              path << "#{archdate.strftime(@@POST_DATE_PATH)}/index.html"
           end
         end
         
@@ -221,8 +221,8 @@ class OakTree
       def posts
         case @mode
           when :home
-            page_start = @page_index * 10
-            page_end = page_start + 10
+            page_start = @page_index * @spec.posts_per_page
+            page_end = page_start + @spec.posts_per_page - 1
             if @posts.length < page_end
               page_end = @posts.length
             end

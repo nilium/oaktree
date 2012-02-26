@@ -32,7 +32,7 @@ class OakTree
       end
       
       def permalink
-        @spec.base_url + @spec.post_path + "/#{year}/#{month}.html"
+        @spec.base_url + @spec.post_path + "/#{year}/#{month}/"
       end
       
       def open?
