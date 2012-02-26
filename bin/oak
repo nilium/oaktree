@@ -70,6 +70,19 @@ BLOG_TEMPLATE = <<EOT
       </div><!-- post: {{title}} -->
       {{/posts}}
     </div><!-- posts -->
+    
+    {{#paged?}}
+    <div id="nav-bar">
+      {{#has_previous?}}<a href="{{previous_url}}">&#x2190; 
+        {{#archive}}{{#previous_archive}}{{#date}}%B %Y{{/date}}{{/previous_archive}}{{/archive}}{{^archive}}older{{/archive}}
+      </a>{{/has_previous?}}
+      {{#has_next?}}{{#has_previous?}} &mdash; {{/has_previous?}}{{/has_next?}}
+      {{#has_next?}}<a href="{{next_url}}">
+        {{#archive}}{{#next_archive}}{{#date}}%B %Y{{/date}}{{/next_archive}}{{/archive}}{{^archive}}newer{{/archive}}
+      &#x2192;</a>{{/has_next?}}
+      
+    </div>
+    {{/paged?}}
 
     <div id="archives">
       <h4>Archives</h4>
