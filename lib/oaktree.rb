@@ -12,7 +12,7 @@ require 'oaktree/template'
 # The central blog class (also just called a tree from time to time)
 class OakTree
   
-  VERSION = '0.1.1'
+  VERSION = '0.2.0'
 
   def initialize spec
     @spec = spec
