@@ -14,7 +14,7 @@ Gem::Specification.new { |spec|
   spec.summary     = 'OakTree static HTML blog'
   spec.description = DESCRIPTION
   spec.authors     = ['Noel Cower']
-  spec.license     = ['WTFPL-2', 'MIT']
+  spec.licenses    = ['WTFPL-2', 'MIT']
   spec.email       = 'ncower@gmail.com'
   spec.homepage    = 'http://spifftastic.net/oaktree/'
   spec.executables << 'oak'
