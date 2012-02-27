@@ -11,11 +11,6 @@ class OakTree
     attr_accessor :title
     # A description of the blog
     attr_accessor :description
-    # The base URL of the blog (i.e., http://localhost/blog) - should not have a
-    # trailing slash.
-    attr_accessor :base_url
-    # The post path (i.e., the subdirectory where posts are stored).
-    attr_accessor :post_path
     # The blog root, where files are stored locally.
     # Beneath this directory, there should be /source and /public directories,
     # where post sources and the blog output, respectively, are stored. If these
@@ -28,7 +23,36 @@ class OakTree
     attr_accessor :posts_per_page
     # Whether the timeline is reversed
     attr_accessor :reversed
-  
+    
+    # Sets the post path (i.e., the subdirectory where posts are stored).
+    # Should not have a trailing slash, but should have a beginning slash.
+    def post_path= path
+      raise "post_path provided is nil" if path.nil?
+      raise "post_path provided is not a string" unless path.kind_of?(String)
+      
+      @post_path = path.chomp('/')
+      @post_path = "/#{@post_path}" if ! @post_path.empty? && ! @post_path.start_with?('/')
+    end
+    
+    # Gets the post path (i.e., the subdirectory where posts are stored).
+    def post_path
+      @post_path
+    end
+    
+    # Sets the base URL of the blog (i.e., http://localhost/blog) - should not
+    # have a trailing slash.
+    def base_url= url
+      raise "base_url provided is nil" if url.nil?
+      raise "base_url provided is not a string" unless url.kind_of?(String)
+      
+      @base_url = url.chomp('/')
+    end
+    
+    # Gets the base URL of the blog (i.e., http://localhost/blog).
+    def base_url
+      @base_url
+    end
+    
     # Loads a specification from a file.
     def self.from_file(path)
       raise "Spec file does not exist" unless File.exists? path
@@ -82,18 +106,17 @@ class OakTree
     # Initializes the Specification with its default values.
     def initialize
       # initialize default values for most properties
-      self.title = 'Title'
-      self.description = 'A brief description of this blog'
-      self.base_url = 'http://localhost'
+      self.title = ''
+      self.description = ''
+      self.base_url = ''
       self.post_path = '/post'
-      self.author = "Someone"
+      self.author = ''
       self.posts_per_page = 10
+      self.reversed = false
     
       yield self if block_given?
     
       @blog_root = File.expand_path Dir.getwd
-    
-      @post_path = "/#{@post_path}" if ! @post_path.empty? && ! @post_path.start_with?('/')
     end
   
     def export_string
