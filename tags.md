@@ -102,12 +102,14 @@ These tags allow you to access the current set of posts or a single post, as wel
 
 A section tag providing access to all posts on the current page. You can use this to render blog posts. The following example would render all posts on the given page uniformly:
 
-  {{#posts}}
-   <article>
-	<h1><a href="{{url}}">{{title}}</a></h1>
-	{{content}}
-   </article>
-  {{/posts}}
+    {{#posts}}
+    <article>
+      <h1><a href="{{url}}">{{title}}</a></h1>
+      <div class="content">
+        {{content}}
+      </div>
+    </article>
+    {{/posts}}
 
 #### `post` (single only)
 
@@ -127,30 +129,30 @@ Archive tags provide access to `PostArchive` contexts. Archive tags have fairly 
 
 This section tag provides access to all `PostArchive` contexts from newest to oldest. It can be used to render links to all archive pages, for example:
 
-  <ul>
-   {{#archives}}
-   <li>
-	<a href="{{permalink}}">
-	 {{#date}}%B %Y{{/date}}
-	</a>
-   </li>
-   {{/archives}}
-  </ul>
+    <ul>
+      {{#archives}}
+      <li>
+        <a href="{{permalink}}">
+        {{#date}}%B %Y{{/date}}
+        </a>
+      </li>
+      {{/archives}}
+    </ul>
 
 Which might produce something like the following:
 
-  <ul>
-   <li>
-	<a href="/posts/2012/2.html">
-	 February 2012
-	</a>
-   </li>
-   <li>
-	<a href="/posts/2012/3.html">
-	 March 2012
-	</a>
-   </li>
-  </ul>
+    <ul>
+      <li>
+        <a href="/posts/2012/2/">
+        February 2012
+        </a>
+      </li>
+      <li>
+        <a href="/posts/2012/3/">
+        March 2012
+        </a>
+      </li>
+    </ul>
 
 #### `archive` (archive only)
 
