@@ -3,7 +3,8 @@ require 'rake'
 DESCRIPTION = <<EOD
 OakTree static HTML blog generation tool.
 
-If you're smart, you won't use this.
+If you're smart, you won't use this.  Otherwise, run 'oak' and read the
+instructions.  It's fairly simple to use.
 EOD
 
 Gem::Specification.new { |spec|
@@ -13,6 +14,7 @@ Gem::Specification.new { |spec|
   spec.summary     = 'OakTree static HTML blog'
   spec.description = DESCRIPTION
   spec.authors     = ['Noel Cower']
+  spec.license     = ['WTFPL-2', 'MIT']
   spec.email       = 'ncower@gmail.com'
   spec.homepage    = 'http://spifftastic.net/oaktree/'
   spec.executables << 'oak'
