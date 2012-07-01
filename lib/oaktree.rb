@@ -39,6 +39,11 @@ class OakTree
   def generate force_build = false
     blog_template = Template::Blog.new self
 
+    skipped_files = []
+    new_files = []
+    updated_files = []
+    old_files = Dir.glob('public/**/*.html')
+
     blog_template.modes.each {
       |mode|
 
@@ -48,6 +53,10 @@ class OakTree
         blog_template.page = page
         path = blog_template.local_path
         pretty_path = Pathname.new(path).relative_path_from(Pathname.new(@spec.blog_root)).to_s
+
+        if old_files.include? pretty_path
+          old_files.delete pretty_path
+        end
 
         mtime = File.exists?(path) ? File.mtime(path) : nil
         needs_update = force_build || mtime.nil?
@@ -59,7 +68,7 @@ class OakTree
           }
 
           if ! needs_update
-            puts "Skipping #{pretty_path}"
+            skipped_files << path
             next
           end
         end
@@ -67,12 +76,27 @@ class OakTree
         dir = File.dirname(path)
         FileUtils.mkdir_p dir unless File.directory? dir
 
-        puts "Writing #{pretty_path}"
+        if File.exists? path
+          updated_files << pretty_path
+        else
+          new_files << pretty_path
+        end
+
         File.open(path, 'w') {
           |io|
           io.write blog_template.render
         }
       }
+    }
+
+    updated_files.each { |path| puts "* #{path}" }
+
+    new_files.each { |path| puts "+ #{path}"}
+
+    old_files.each {
+      |path|
+      puts "- #{path}"
+      File.unlink path
     }
   end
 
