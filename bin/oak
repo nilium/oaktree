@@ -16,7 +16,7 @@ COMMANDS
 * -n, newpost [title]
 Creates a new post.  If no title is given, the post's title is "Untitled".
 The new post is placed in the blog's source/ directory
-  
+
 * -i, init [dir]
 Creates a 'blog_spec' file and required directories in the given directory
 if blog_spec doesn't already exist.  If no directory is provided, oak uses
@@ -70,17 +70,17 @@ BLOG_TEMPLATE = <<EOT
     </div><!-- post: {{title}} -->
     {{/posts}}
   </div><!-- posts -->
-    
+
   {{#paged?}}
   <div id="nav-bar">
-    {{#has_previous?}}<a href="{{previous_url}}">&#x2190; 
+    {{#has_previous?}}<a href="{{previous_url}}">&#x2190;
       {{#archive}}{{#previous_archive}}{{#date}}%B %Y{{/date}}{{/previous_archive}}{{/archive}}{{^archive}}older{{/archive}}
     </a>{{/has_previous?}}
     {{#has_next?}}{{#has_previous?}} &mdash; {{/has_previous?}}{{/has_next?}}
     {{#has_next?}}<a href="{{next_url}}">
       {{#archive}}{{#next_archive}}{{#date}}%B %Y{{/date}}{{/next_archive}}{{/archive}}{{^archive}}newer{{/archive}}
     &#x2192;</a>{{/has_next?}}
-      
+
   </div>
   {{/paged?}}
 
@@ -114,16 +114,16 @@ def init_blog directory
   if ! (File.exists?(directory) && File.directory?(directory)) && directory != '.'
     FileUtils.mkdir_p directory
   end
-  
+
   Dir.chdir(directory) { |path|
     if File.exists? 'blog_spec' then
       raise "blog_spec already exists in #{directory}"
     end
-    
+
     Dir.mkdir 'source'
     Dir.mkdir 'public'
     Dir.mkdir 'template'
-    
+
     File.open('blog_spec', 'w') { |io| io.write OakTree::Specification.new.export_string }
     File.open('template/blog.mustache', 'w') { |io| io.write BLOG_TEMPLATE }
   }
@@ -133,7 +133,7 @@ end
 # Show the version
 def show_version
   version = OakTree::VERSION
-  
+
   puts "#{GEM_NAME} version #{version}"
 end
 
@@ -148,14 +148,14 @@ end
 # Generate a new post file for the blog
 def new_post spec, title
   title = title.gsub(/[\n\t]+/, '').strip
-  
+
   today = DateTime.now
-  
+
   titleslug = title.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
   timeslug = today.strftime '%Y-%m-%d'
-  
+
   file = "#{spec.blog_root}/source/#{timeslug}_#{titleslug}.md"
-  
+
   head = <<HEADSTR
 title: #{title}
 time: #{today.strftime '%Y-%m-%d %H:%M:%S %z'}
@@ -168,59 +168,59 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
 fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
 culpa qui officia deserunt mollit anim id est laborum.
 HEADSTR
-  
+
   IO.write file, head
-    
+
   return file
 end
 
 
 def sync_changes spec, force
   raise "No blog_spec found" if spec.nil?
-      
+
   blog = OakTree.new spec
   blog.generate force
 end
 
-
 # Command selector majigger
 def dispatch_command cmd, *args
-  
+
+
   spec = (File.exists? 'blog_spec') ? (OakTree::Specification.from_file 'blog_spec') : nil
-  
+
   case cmd
-    
+
     when 'newpost', '-n'
       raise "Not in a blog directory" unless File.exists? 'blog_spec'
-    
+
       title = 'Untitled'
       title = args.join ' ' unless args.empty?
       new_post spec, title
-      
+
     when 'init', '-i'
       directory = '.'
       directory = args[0] unless args.empty?
       init_blog directory
-    
+
     when 'version', '-v'
       show_version
-    
+
     when 'help', '-h'
       show_help
-    
+
     when 'rebuild', '-r'
       sync_changes spec, true
-    
+
     when 'sync', '-s'
       sync_changes spec, false
-    
+
     else
       puts "Unrecognized command '#{cmd}'\n\n"
-      
+
       show_help
-  
+
   end
-  
+
 end
 
 
