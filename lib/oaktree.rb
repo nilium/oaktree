@@ -11,7 +11,7 @@ require 'oaktree/template'
 
 # The central blog class (also just called a tree from time to time)
 class OakTree
-  
+
   VERSION = '0.2.0'
 
   def initialize spec
@@ -25,12 +25,12 @@ class OakTree
   def blogspec
     @spec
   end
-  
+
   def posts
     sync_posts
     return @posts
   end
-  
+
   # Generates and writes the HTML files for the blog.
   # If force_rebuild is false, it will only rebuild pages with posts that have
   # changed, otherwise it rebuilds everything.
@@ -38,35 +38,35 @@ class OakTree
   # make any changes to templates, you must force a rebuild.
   def generate force_build = false
     blog_template = Template::Blog.new self
-    
+
     blog_template.modes.each {
       |mode|
-      
+
       blog_template.mode = mode
-      
+
       (1..blog_template.pages).each { |page|
         blog_template.page = page
         path = blog_template.local_path
         pretty_path = Pathname.new(path).relative_path_from(Pathname.new(@spec.blog_root)).to_s
-        
+
         mtime = File.exists?(path) ? File.mtime(path) : nil
         needs_update = force_build || mtime.nil?
-        
+
         if ! needs_update
           needs_update = blog_template.posts.inject(false) { |memo, post|
             data = post.post_data
             memo || mtime < data.file_mtime
           }
-          
+
           if ! needs_update
             puts "Skipping #{pretty_path}"
             next
           end
         end
-        
+
         dir = File.dirname(path)
         FileUtils.mkdir_p dir unless File.directory? dir
-        
+
         puts "Writing #{pretty_path}"
         File.open(path, 'w') {
           |io|
@@ -83,17 +83,17 @@ class OakTree
     altered = false
     entries.each { |entry|
       next if @posts.index { |post| post.source_path === entry }
-      
+
       @posts << PostData.new(entry, blogspec)
       altered = true
     }
 
     return unless altered
-    
+
     @posts.sort! { |left, right|
       @spec.reversed ? left.time <=> right.time : right.time <=> left.time
     }
-    
+
     return self
   end
 
