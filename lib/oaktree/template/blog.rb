@@ -83,7 +83,7 @@ class OakTree
               path << "/#{@page_index}.html"
             when :single
               data = post.post_data
-              path << "#{data.time.strftime(@@POST_DATE_PATH)}/#{data.slug}.html"
+              path << "#{data.time.strftime(@@POST_DATE_PATH)}/#{data.slug}/index.html"
             when :archive
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)

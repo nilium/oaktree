@@ -35,7 +35,7 @@ class OakTree
   
     def permalink
       sync_changes
-      @spec.base_url + "#{@spec.post_path}/#{@time.strftime '%Y/%-m'}/#{@slug}.html"
+      @spec.base_url + "#{@spec.post_path}/#{@time.strftime '%Y/%-m'}/#{@slug}/index.html"
     end
   
     def public_path
@@ -143,7 +143,7 @@ class OakTree
     
       @content = source_split[2]
     
-      @public_path = "public/#{@time.strftime '%Y/%m'}/#{@slug}.html"
+      @public_path = "public/#{@time.strftime '%Y/%m'}/#{@slug}/index.html"
       @public_path = "#{@spec.blog_root}/#{@public_path}" unless @spec.nil?
     
       @last_modified = DateTime.now
