@@ -193,9 +193,42 @@ def dispatch_command cmd, *args
     when 'newpost', '-n'
       raise "Not in a blog directory" unless File.exists? 'blog_spec'
 
-      title = 'Untitled'
+      open_editor = false
+      title = ''
+
+      until args.empty?
+        arg = args.shift
+
+        # finnagling with arguments
+        if arg =~ /^(--[^=]+)=(.*)$/
+          arg = $1
+          args.unshift $2
+        end
+
+        if arg =~ /^(-[t])(.+)$/
+          arg = $1
+          args.unshift $2
+        end
+
+        case arg
+          when '-t', '--time'
+            output_dir = args.shift
+            break unless title.empty?
+          when '-e', '--edit'
+            open_editor = true
+          else
+            title = "#{title} #{arg}"
+        end
+      end
+
+      title = 'Untitled' if title.empty?
       title = args.join ' ' unless args.empty?
-      new_post spec, title
+      file = new_post(spec, title)
+
+      if open_editor
+        editor = ENV['EDITOR'] || 'open'
+        %x["#{editor}" "#{file}"]
+      end
 
     when 'init', '-i'
       directory = '.'
