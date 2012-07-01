@@ -35,7 +35,7 @@ class OakTree
 
     def permalink
       sync_changes
-      @spec.base_url + "#{@spec.post_path}/#{@time.strftime '%Y/%-m'}/#{@slug}/index.html"
+      @spec.base_url + "#{@spec.post_path}/#{@time.strftime '%Y/%-m'}/#{@slug}/"
     end
 
     def public_path
