@@ -140,7 +140,11 @@ class OakTree
           # you can render multiple home pages, but it's not something I recommend
           # since re-syncing all homepage posts is a nightmare at some point
           when :home
-            (@posts.length / @spec.posts_per_page) + 1
+            if @spec.posts_per_page > 0
+              (@posts.length / @spec.posts_per_page) + 1
+            else
+              1
+            end
 
           when :archive
             @archive.length
@@ -221,15 +225,19 @@ class OakTree
       def posts
         case @mode
           when :home
-            page_start = @page_index * @spec.posts_per_page
-            page_end = page_start + @spec.posts_per_page - 1
-            if @posts.length < page_end
-              page_end = @posts.length
+            if @spec.posts_per_page > 0
+              page_start = @page_index * @spec.posts_per_page
+              page_end = page_start + @spec.posts_per_page - 1
+              if @posts.length < page_end
+                page_end = @posts.length
+              end
+
+              return [] unless page_start < @posts.length
+
+              @posts[page_start .. page_end]
+            else
+              @posts[0..-1]
             end
-
-            return [] unless page_start < @posts.length
-
-            @posts[page_start .. page_end]
 
           when :archive
             @archive[@page_index].posts
