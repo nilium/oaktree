@@ -170,6 +170,8 @@ culpa qui officia deserunt mollit anim id est laborum.
 HEADSTR
   
   IO.write file, head
+    
+  return file
 end
 
 
