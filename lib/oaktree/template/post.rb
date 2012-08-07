@@ -76,6 +76,18 @@ class OakTree
         @post.slug
       end
 
+      def published?
+        @post.status == :published
+      end
+
+      def unpublished?
+        ! published?
+      end
+
+      def status
+        @post.status
+      end
+
     end # Post
 
   end # Template

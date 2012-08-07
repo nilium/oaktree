@@ -33,7 +33,7 @@ class OakTree
 
         @postdata = tree.posts.map { |post|
           Post.new(@spec, post)
-        }
+        }.select(&:published?)
 
         @posts = @postdata.select(&:post?)
         @statics = @postdata.select(&:static?)
