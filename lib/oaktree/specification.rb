@@ -44,11 +44,11 @@ class OakTree
     def post_path= path
       raise "post_path provided is nil" if path.nil?
       raise "post_path provided is not a string" unless path.kind_of?(String)
-      
+
       @post_path = path.chomp('/')
       @post_path = "/#{@post_path}" if ! @post_path.empty? && ! @post_path.start_with?('/')
     end
-    
+
     # Gets the post path (i.e., the subdirectory where posts are stored).
     def post_path
       @post_path
@@ -67,38 +67,38 @@ class OakTree
     def base_url= url
       raise "base_url provided is nil" if url.nil?
       raise "base_url provided is not a string" unless url.kind_of?(String)
-      
+
       @base_url = url.chomp('/')
     end
-    
+
     # Gets the base URL of the blog (i.e., http://localhost/blog).
     def base_url
       @base_url
     end
-    
+
     # Loads a specification from a file.
     def self.from_file(path)
       raise "Spec file does not exist" unless File.exists? path
-    
+
       self.new { |spec|
-      
+
         File.open(path, 'r') { |io|
-        
+
           io.each_line { |line|
             line = line.strip
-          
+
             next if line.empty? || line.start_with?('#')
-          
+
             match = line.match @@KEY_VALUE_PATTERN
-          
+
             if match.nil? then
               puts "Invalid entry in blog_spec: #{line}"
               next
             end
-          
+
             key = match[:key]
             value = match[:value]
-          
+
             case key.to_sym
               when :title
                 spec.title = value
@@ -122,14 +122,14 @@ class OakTree
                 puts "Invalid name for entry in blog_spec: #{line}"
             end
           }
-        
+
         }
-      
+
         Dir.chdir(File.dirname(path))
-      
+
       }
     end
-  
+
     # Initializes the Specification with its default values.
     def initialize
       # initialize default values for most properties
@@ -142,12 +142,12 @@ class OakTree
       self.reversed = false
       self.date_path_format = self.class.default_date_path_format
       self.word_separator = self.class.default_word_separator
-    
+
       yield self if block_given?
-    
+
       @blog_root = File.expand_path Dir.getwd
     end
-  
+
     def export_string
       <<-EOT
 # metadata
@@ -163,7 +163,7 @@ base_url:  #{@base_url}
 post_path: #{@post_path}
       EOT
     end
-    
+
   end # Specification
 
 end # OakTree
