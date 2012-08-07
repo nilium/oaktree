@@ -45,7 +45,15 @@ class OakTree
         plink = @post.link
         ! (plink.nil? || plink.empty?)
       end
-  
+
+      def static?
+        @post.kind == :static
+      end
+
+      def post?
+        @post.kind == :post
+      end
+
       def content
         if @content.nil? || @mtime < @post.last_modified
           document = ::Kramdown::Document.new(@post.content)

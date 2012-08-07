@@ -40,6 +40,8 @@ class OakTree
                        when :post
                          fmt_time = @time.strftime(date_fmt)
                          "#{@spec.post_path}/#{fmt_time}#{@slug}"
+                       when :static
+                         "#{@spec.post_path}/#{@slug}"
                        end
     end
 
@@ -167,6 +169,8 @@ class OakTree
                      when :post
                        fmt_time = @time.strftime(date_fmt)
                        "public/#{fmt_time}#{@slug}/"
+                     when :static
+                       "public/#{@slug}/"
                      end
       @public_path << 'index.html'
       @public_path = "#{@spec.blog_root}/#{@public_path}" unless @spec.nil?

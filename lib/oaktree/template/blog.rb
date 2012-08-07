@@ -10,7 +10,7 @@ class OakTree
 
     class Blog < Base
 
-      @@MODES = [:home, :archive, :single].freeze
+      @@MODES = [:home, :archive, :single, :statics].freeze
 
       # returns an enumerator for all modes supported by the template class
       def self.modes
@@ -31,15 +31,19 @@ class OakTree
         @mode = options[:mode] || :home
         raise "Invalid mode" unless @@MODES.include? @mode
 
-        postdata = tree.posts
-        @posts = postdata.map { |post|
+        @postdata = tree.posts.map { |post|
           Post.new(@spec, post)
         }
+
+        @posts = @postdata.select(&:post?)
+        @statics = @postdata.select(&:static?)
+
         @posts.freeze
+        @statics.freeze
 
         # build the archive
         @archive = []
-        @posts.each { |post|
+        @posts.map { |post|
           data = post.post_data
           time = data.time
 
@@ -66,8 +70,11 @@ class OakTree
         @mode = mode
       end
 
-      ### blog tags
+      def mode
+        @mode
+      end
 
+      ### blog tags
 
       def local_path
         path = @spec.blog_root + "/public"
@@ -78,7 +85,7 @@ class OakTree
         else
           path << @spec.post_path
 
-          case @mode
+          case mode
             when :home
               path << "/#{@page_index}.html"
             when :single
@@ -88,6 +95,9 @@ class OakTree
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)
               path << "/#{archdate.strftime(date_format)}"
+            when :statics
+              data = post.post_data
+              path << "/#{data.slug}/"
           end
 
           path << 'index.html' if path.end_with? '/'
@@ -126,6 +136,10 @@ class OakTree
         @mode == :home
       end
 
+      def statics?
+        @mode == :statics
+      end
+
       # uses the input as a format string for the first day of the month and year
       # of the archive page.
       # this returns nil if not in archive mode.
@@ -136,9 +150,13 @@ class OakTree
         proc_for_datetime(DateTime.new(arch.year, arch.month, 1))
       end
 
+      def statics
+        @statics
+      end
+
       # returns the number of pages
       def pages
-        case @mode
+        case mode
           # you can render multiple home pages, but it's not something I recommend
           # since re-syncing all homepage posts is a nightmare at some point
           when :home
@@ -153,6 +171,9 @@ class OakTree
 
           when :single
             @posts.length
+
+          when :statics
+            @statics.length
         end
       end
 
@@ -182,7 +203,7 @@ class OakTree
       def next_url
         return "" unless has_next?
 
-        case @mode
+        case mode
           when :home
             if @page_index == 1
               blog_url
@@ -199,7 +220,7 @@ class OakTree
       def previous_url
         return "" unless has_previous?
 
-        case @mode
+        case mode
           when :home
             blog_url + @spec.post_path + "/#{@page_index + 1}.html"
           when :archive
@@ -225,7 +246,7 @@ class OakTree
       # returns all visible posts
       # note: visible means whatever is in the current page
       def posts
-        case @mode
+        case mode
           when :home
             if @spec.posts_per_page > 0
               page_start = @page_index * @spec.posts_per_page
@@ -246,13 +267,19 @@ class OakTree
 
           when :single
             [@posts[@page_index]]
+
+          when :statics
+            [@statics[@page_index]]
         end
       end
 
       # if there's only one post being displayed, this returns its template.
       # only works in single mode.
       def post
-        single? ? @posts[@page_index] : nil
+        case mode
+        when :single then @posts[@page_index]
+        when :statics then @statics[@page_index]
+        end
       end
 
       # returns the next post (you generally shouldn't use this except to get
