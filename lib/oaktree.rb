@@ -14,6 +14,8 @@ class OakTree
 
   VERSION = '0.2.1'
 
+  @@EMPTY_DIR_ENTRIES = ['.', '..']
+
   def initialize spec
     @spec = spec
 
@@ -97,6 +99,10 @@ class OakTree
       |path|
       puts "- #{path}"
       File.unlink path
+      dir = File.dirname path
+      if Dir.entries(dir) == @@EMPTY_DIR_ENTRIES
+        Dir.unlink dir
+      end
     }
   end
 
