@@ -152,7 +152,12 @@ class OakTree
       raise "No post time provided in post '#{@source_path}'" if @time.nil?
 
       if @slug.nil? then
-        @slug = @title.gsub(/[\n\t]+/, '').strip.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
+        sep = @spec ? @spec.word_separator : Specification.default_word_separator
+        slug = @title[0..-1]
+        slug.downcase!
+        slug.strip!
+        slug.gsub! /(?:[^a-z\d]|[\n\t])+/, sep
+        @slug = slug.freeze
       end
 
       @content = source_split[2]
