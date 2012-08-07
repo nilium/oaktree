@@ -68,10 +68,10 @@ class OakTree
 
       ### blog tags
 
-      @@POST_DATE_PATH = '/%Y/%-m'
 
       def local_path
         path = @spec.blog_root + "/public"
+        date_format = @spec.date_path_format
 
         if home? && @page_index == 0
           path << "/index.html"
@@ -83,12 +83,14 @@ class OakTree
               path << "/#{@page_index}.html"
             when :single
               data = post.post_data
-              path << "#{data.time.strftime(@@POST_DATE_PATH)}/#{data.slug}/index.html"
+              path << "/#{data.time.strftime(date_format)}#{data.slug}/"
             when :archive
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)
-              path << "#{archdate.strftime(@@POST_DATE_PATH)}/index.html"
+              path << "/#{archdate.strftime(date_format)}"
           end
+
+          path << 'index.html' if path.end_with? '/'
         end
 
         path

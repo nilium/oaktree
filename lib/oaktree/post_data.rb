@@ -35,7 +35,12 @@ class OakTree
 
     def permalink
       sync_changes
-      @spec.base_url + "#{@spec.post_path}/#{@time.strftime '%Y/%-m'}/#{@slug}/"
+      date_fmt = @spec ? @spec.date_path_format : Specification.default_date_path_format
+      @spec.base_url + case @kind
+                       when :post
+                         fmt_time = @time.strftime(date_fmt)
+                         "#{@spec.post_path}/#{fmt_time}#{@slug}"
+                       end
     end
 
     def public_path
@@ -77,6 +82,11 @@ class OakTree
       File.exists?(@source_path) ? File.mtime(@source_path) : Time.new()
     end
 
+    def kind
+      sync_changes
+      @kind
+    end
+
     private
 
     def sync_changes force = false
@@ -103,6 +113,7 @@ class OakTree
       @title = nil
       @time = nil
       @content = nil
+      @kind = :post
 
       split_index = 0
 
@@ -129,6 +140,9 @@ class OakTree
           when :slug
             @slug = value.freeze
 
+          when :kind
+            @kind = value.to_sym.freeze
+
           else
             puts "Unrecognized metadata key '#{key}' in #{@source_path}"
         end
@@ -143,7 +157,13 @@ class OakTree
 
       @content = source_split[2]
 
-      @public_path = "public/#{@time.strftime '%Y/%m'}/#{@slug}/index.html"
+      date_fmt = @spec ? @spec.date_path_format : Specification.default_date_path_format
+      @public_path = case @kind
+                     when :post
+                       fmt_time = @time.strftime(date_fmt)
+                       "public/#{fmt_time}#{@slug}/"
+                     end
+      @public_path << 'index.html'
       @public_path = "#{@spec.blog_root}/#{@public_path}" unless @spec.nil?
 
       @last_modified = DateTime.now

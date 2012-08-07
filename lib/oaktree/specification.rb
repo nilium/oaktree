@@ -6,7 +6,12 @@ class OakTree
   # URLs and paths are strings and should not end in a slash.
   class Specification
     @@KEY_VALUE_PATTERN = /^\s*(?<key>[\w_]+)\s*:\s*(?<value>.*?)\s*(#|$)/
-  
+    @@DEFAULT_DATE_PATH_FORMAT = '%Y/%m/'
+
+    def self.default_date_path_format
+      @@DEFAULT_DATE_PATH_FORMAT
+    end
+
     # The blog's title
     attr_accessor :title
     # A description of the blog
@@ -23,7 +28,9 @@ class OakTree
     attr_accessor :posts_per_page
     # Whether the timeline is reversed
     attr_accessor :reversed
-    
+    # The date format for post paths
+    attr_accessor :date_path_format
+
     # Sets the post path (i.e., the subdirectory where posts are stored).
     # Should not have a trailing slash, but should have a beginning slash.
     def post_path= path
@@ -38,7 +45,15 @@ class OakTree
     def post_path
       @post_path
     end
-    
+
+    def date_path_format= format
+      if format.empty?
+        @date_path_format = self.class.default_date_path_format
+      else
+        @date_path_format = format
+      end
+    end
+
     # Sets the base URL of the blog (i.e., http://localhost/blog) - should not
     # have a trailing slash.
     def base_url= url
@@ -91,6 +106,8 @@ class OakTree
                 spec.posts_per_page = value.to_i
               when :reversed
                 spec.reversed = value.downcase =~ /^(true|1|yes)$/ ? true : false
+              when :date_path_format
+                spec.date_path_format = value
               else
                 puts "Invalid name for entry in blog_spec: #{line}"
             end
@@ -113,6 +130,7 @@ class OakTree
       self.author = ''
       self.posts_per_page = 10
       self.reversed = false
+      self.date_path_format = self.class.default_date_path_format
     
       yield self if block_given?
     
