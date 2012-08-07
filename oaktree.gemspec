@@ -9,7 +9,7 @@ EOD
 
 Gem::Specification.new { |spec|
   spec.name        = 'oaktree'
-  spec.version     = '0.2.1'
+  spec.version     = '0.3.0'
   spec.date        = '2012-07-01'
   spec.summary     = 'OakTree static HTML blog'
   spec.description = DESCRIPTION
