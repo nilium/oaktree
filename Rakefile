@@ -1,5 +1,6 @@
 require 'rubygems/package_task'
 require 'rake/testtask'
+require 'rake/clean'
 
 spec = Gem::Specification.load 'oaktree.gemspec'
 
@@ -14,5 +15,7 @@ desc "Build #{spec.name} #{spec.version.to_s}"
 Gem::PackageTask.new(spec) { |task|
   task.need_zip = true
 }
+
+CLEAN.include 'pkg'
 
 task :default => :test
