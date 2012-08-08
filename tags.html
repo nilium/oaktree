@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <title>OakTree Template Tags</title>
+</head>
+<body>
+<h1 id="templates">Templates</h1>
+
+<p>First off, OakTree uses <a href="http://mustache.github.com">Mustache</a> for templates. So, go read its documentation
+then you can come on back and continue reading this. Alright, now that we’ve
+got that out of the way, let’s talk about where these go.</p>
+
+<p>All of your .mustache template files must be placed under
+<code>BLOG_ROOT/templates</code>. It’s pretty simple, don’t over-think this. Now, there is
+only one required template: <code>blog.mustache</code>. This is the template <code>Blog</code> loads
+when OakTree generates its HTML, so it’s pretty important. This is your blog’s
+index, basically.</p>
+
+<p>In <code>blog.mustache</code>, you can do whatever you want from there. That said, there
+are a number of tags that’re worth knowing. The tags below are all separated by
+context, and there are only three contexts: Blog, Post, and PostArchive.
+There’s not a lot there because this is purposefully simple.</p>
+
+<p>It’s worth keeping in mind, however, that the <code>Blog</code> class renders templates in
+three different modes: archive, single, and home. These are fairly simply to
+understand, but documentation follows nonetheless.</p>
+
+<hr />
+
+<h2>Table of Contents</h2>
+
+<ol id="markdown-toc">
+  <li><a href="#templates">Templates</a></li>
+  <li><a href="#blog-modes">Blog Modes</a>    <ol>
+      <li><a href="#archive">Archive</a></li>
+      <li><a href="#single">Single</a></li>
+      <li><a href="#statics">Statics</a></li>
+      <li><a href="#home">Home</a></li>
+    </ol>
+  </li>
+  <li><a href="#tags-by-context">Tags by Context</a>    <ol>
+      <li><a href="#blog-context-tags">Blog Context Tags</a>        <ol>
+          <li><a href="#general-tags">General Tags</a>            <ol>
+              <li><a href="#localpath"><code>local_path</code></a></li>
+              <li><a href="#blogtitle"><code>blog_title</code></a></li>
+              <li><a href="#blogauthor"><code>blog_author</code></a></li>
+              <li><a href="#blogdescription"><code>blog_description</code></a></li>
+              <li><a href="#blogurl"><code>blog_url</code></a></li>
+              <li><a href="#today"><code>today</code></a></li>
+              <li><a href="#urlencode"><code>url_encode</code></a></li>
+              <li><a href="#statics-1"><code>statics</code></a></li>
+            </ol>
+          </li>
+          <li><a href="#page-tags">Page Tags</a>            <ol>
+              <li><a href="#archive-single-statics-and-home"><code>archive?</code>, <code>single?</code>, <code>statics?</code>, and <code>home?</code></a></li>
+              <li><a href="#pages-page"><code>pages</code>, <code>page</code></a></li>
+              <li><a href="#paged"><code>paged?</code></a></li>
+              <li><a href="#hasnext-and-hasprevious"><code>has_next?</code> and <code>has_previous?</code></a></li>
+              <li><a href="#nexturl-and-previousurl"><code>next_url</code> and <code>previous_url</code></a></li>
+            </ol>
+          </li>
+          <li><a href="#post-tags">Post Tags</a>            <ol>
+              <li><a href="#posts"><code>posts</code></a></li>
+              <li><a href="#post-single-and-statics-only"><code>post</code> (single and statics only)</a></li>
+              <li><a href="#nextpost-and-previouspost-single-only"><code>next_post</code> and <code>previous_post</code> (single only)</a></li>
+            </ol>
+          </li>
+          <li><a href="#archive-tags">Archive Tags</a>            <ol>
+              <li><a href="#archives"><code>archives</code></a></li>
+              <li><a href="#archive-archive-only"><code>archive</code> (archive only)</a></li>
+              <li><a href="#nextarchive-and-previousarchive-archive-only"><code>next_archive</code> and <code>previous_archive</code> (archive only)</a></li>
+              <li><a href="#archivedate-archive-only"><code>archive_date</code> (archive only)</a></li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li><a href="#post-context-tags">Post Context Tags</a>        <ol>
+          <li><a href="#title"><code>title</code></a></li>
+          <li><a href="#url"><code>url</code></a></li>
+          <li><a href="#permalink"><code>permalink</code></a></li>
+          <li><a href="#sourcelink"><code>source_link</code></a></li>
+          <li><a href="#sourcelink-1"><code>source_link?</code></a></li>
+          <li><a href="#content"><code>content</code></a></li>
+          <li><a href="#time"><code>time</code></a></li>
+          <li><a href="#publicpath"><code>public_path</code></a></li>
+          <li><a href="#slug"><code>slug</code></a></li>
+        </ol>
+      </li>
+      <li><a href="#postarchive-context-tags">PostArchive Context Tags</a>        <ol>
+          <li><a href="#year-and-month"><code>year</code> and <code>month</code></a></li>
+          <li><a href="#date"><code>date</code></a></li>
+          <li><a href="#permalink-1"><code>permalink</code></a></li>
+          <li><a href="#open"><code>open?</code></a></li>
+          <li><a href="#nextarchive-and-previousarchive"><code>next_archive</code> and <code>previous_archive</code></a></li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<hr />
+
+<h1 id="blog-modes">Blog Modes</h1>
+
+<p>Each blog mode differs by the way it composes pages and which tags are
+functional. For instance, some tags that work in archive mode made not work in
+single and home mode.</p>
+
+<h2 id="archive">Archive</h2>
+
+<p>Archive mode pages render all posts from each month. Empty months are not
+represented and do not have any HTML generated. To explain this in a boring and
+slightly clearer manner, this means that an archive page’s HTML will contain
+all posts from only one month.</p>
+
+<h2 id="single">Single</h2>
+
+<p>Pages in single mode is composed of a single post. In other words, a single
+mode page is just looking at one post.</p>
+
+<h2 id="statics">Statics</h2>
+
+<p>Pages in static mode are disconnected from all other pages. They’re essentially
+articles that sit outside the normal flow of the blog.</p>
+
+<h2 id="home">Home</h2>
+
+<p>Each page in home mode represents a chronological series of paginated posts.
+Pages only contain however many posts you’ve specified in your <code>blog_spec</code>’s
+<code>posts_per_page</code> attribute. Ideally, you should not generate more than the
+index when in <code>home</code> mode, as synchronizing a large body of posts like this
+would be fairly painful.</p>
+
+<p>Home mode has no special tags, though it lacks access to both archive and
+single mode tags.</p>
+
+<hr />
+
+<h1 id="tags-by-context">Tags by Context</h1>
+
+<p>What follows is a list of all tags by their context (not mode). Contexts are
+the upper-most object currently contributing tags to the template. The blog
+context is always the root, while further contexts are typically posts and
+archives.</p>
+
+<h2 id="blog-context-tags">Blog Context Tags</h2>
+
+<h3 id="general-tags">General Tags</h3>
+
+<p>General tags provide you with some information about the blog itself or offer
+some functionality that isn’t specific to a particular mode.</p>
+
+<h4 id="localpath"><code>local_path</code></h4>
+
+<p>This tag is mainly for use by OakTree internally, but you could also use it for
+debugging if you were testing out something or other. It just emits the
+absolute path of the file currently being generated.</p>
+
+<h4 id="blogtitle"><code>blog_title</code></h4>
+
+<p>This is whatever’s in your <code>blog_spec</code>’s <code>title</code> attribute.</p>
+
+<h4 id="blogauthor"><code>blog_author</code></h4>
+
+<p>Emits the blog author, obviously.</p>
+
+<h4 id="blogdescription"><code>blog_description</code></h4>
+
+<p>This is whatever you put in your <code>blog_spec</code>’s <code>description</code> attribute. Your
+best use of this is probably metadata.</p>
+
+<h4 id="blogurl"><code>blog_url</code></h4>
+
+<p>This is the <code>base_url</code> attribute from your <code>blog_spec</code>. Why the different name?
+I don’t know, let’s blame the tides or something. This URL shouldn’t have a
+trailing forward slash unless you went and put one in the <code>blog_spec</code> (in which
+case you shouldn’t have).</p>
+
+<h4 id="today"><code>today</code></h4>
+
+<p>This is a lambda that takes a format string and emits the current date and time
+as rendered by <code>DateTime#strftime</code>. For example, <code>{{#today}}%Y %B
+%-d{{/today}}</code> renders <code>2012 February 5</code> (at least at the time of this writing).</p>
+
+<h4 id="urlencode"><code>url_encode</code></h4>
+
+<p>Anything wrapped in this tag will be encoded for placement in a URL. For
+example:</p>
+
+<pre><code>{{#url_encode}}{{permalink}}{{/url_encode}}
+</code></pre>
+
+<p>This will output the permalink encoded for use in a URL.</p>
+
+<h4 id="statics-1"><code>statics</code></h4>
+
+<p>This will iterate over all statics currently in the blog. This is accessible
+from all contexts and modes and will always provide the same content during
+generation.</p>
+
+<p>If you choose to provide statics via a menu visible on all pages, this is a good
+way to do it. Keep in mind, however, that this is output on <em>all</em> pages of the
+blog, so it can quickly add up if you use many static pages.</p>
+
+<p>In such a case, it may be worth looking into adding a new mode to OakTree.</p>
+
+<h3 id="page-tags">Page Tags</h3>
+
+<p>Page tags tell you something about the page. Use them wisely.</p>
+
+<h4 id="archive-single-statics-and-home"><code>archive?</code>, <code>single?</code>, <code>statics?</code>, and <code>home?</code></h4>
+
+<p>These are section tags that you can use to render content differently between
+archive, single, statics, and home pages.</p>
+
+<h4 id="pages-page"><code>pages</code>, <code>page</code></h4>
+
+<p><code>pages</code> emits the total number of pages for the current mode. You probably
+don’t need to use this for anything. <code>page</code> emits the current page number
+which, again, is probably not all that useful.</p>
+
+<h4 id="paged"><code>paged?</code></h4>
+
+<p>This section tag tells whether there are next or previous pages. This is only
+true if there’s one page.</p>
+
+<h4 id="hasnext-and-hasprevious"><code>has_next?</code> and <code>has_previous?</code></h4>
+
+<p>Sectional tags to determine if there are next or previous pages. These are
+undefined for static pages.</p>
+
+<h4 id="nexturl-and-previousurl"><code>next_url</code> and <code>previous_url</code></h4>
+
+<p>Emits URLs for the next and previous pages respectively. These are undefined for
+static pages.</p>
+
+<h3 id="post-tags">Post Tags</h3>
+
+<p>These tags allow you to access the current set of posts or a single post, be it
+static or chained, as well as a few other things. All post tags provide you with
+a <code>Post</code> context when available.</p>
+
+<h4 id="posts"><code>posts</code></h4>
+
+<p>A section tag providing access to all posts on the current page. You can use
+this to render blog posts. The following example would render all posts on the
+given page uniformly:</p>
+
+<pre><code>{{#posts}}
+&lt;article&gt;
+  &lt;h1&gt;&lt;a href="{{url}}"&gt;{{title}}&lt;/a&gt;&lt;/h1&gt;
+  &lt;div class="content"&gt;
+    {{content}}
+  &lt;/div&gt;
+&lt;/article&gt;
+{{/posts}}
+</code></pre>
+
+<h4 id="post-single-and-statics-only"><code>post</code> (single and statics only)</h4>
+
+<p>Section tag to access the current post. This only works in single mode. You may
+also want to read the tags available in a post context.</p>
+
+<h4 id="nextpost-and-previouspost-single-only"><code>next_post</code> and <code>previous_post</code> (single only)</h4>
+
+<p>These section tags are provided in case you want to pull something from the
+context of either the next or previous posts in line. They only work in single
+mode.</p>
+
+<h3 id="archive-tags">Archive Tags</h3>
+
+<p>Archive tags provide access to <code>PostArchive</code> contexts. Archive tags have fairly
+limited utility.</p>
+
+<h4 id="archives"><code>archives</code></h4>
+
+<p>This section tag provides access to all <code>PostArchive</code> contexts from newest to
+oldest. It can be used to render links to all archive pages, for example:</p>
+
+<pre><code>&lt;ul&gt;
+  {{#archives}}
+  &lt;li&gt;
+    &lt;a href="{{permalink}}"&gt;
+    {{#date}}%B %Y{{/date}}
+    &lt;/a&gt;
+  &lt;/li&gt;
+  {{/archives}}
+&lt;/ul&gt;
+</code></pre>
+
+<p>Which might produce something like the following:</p>
+
+<pre><code>&lt;ul&gt;
+  &lt;li&gt;
+    &lt;a href="/posts/2012/2/"&gt;
+    February 2012
+    &lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href="/posts/2012/3/"&gt;
+    March 2012
+    &lt;/a&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<h4 id="archive-archive-only"><code>archive</code> (archive only)</h4>
+
+<p>A section tag that provides access to the page’s current <code>PostArchive</code> context
+when in archive mode.</p>
+
+<h4 id="nextarchive-and-previousarchive-archive-only"><code>next_archive</code> and <code>previous_archive</code> (archive only)</h4>
+
+<p>Section tags that provide access to the next (newer) and previous (older)
+<code>PostArchive</code> contexts.</p>
+
+<h4 id="archivedate-archive-only"><code>archive_date</code> (archive only)</h4>
+
+<p>A lambda that formats the current archive’s date (the first day of the month
+for the <code>PostArchive</code> context) using <code>DateTime#strftime</code>. Works the same as the
+<code>today</code> tag.</p>
+
+<h2 id="post-context-tags">Post Context Tags</h2>
+
+<p>There are no particularly special categories of tag under Post since they’re
+all fairly specific to the post to start.</p>
+
+<h4 id="title"><code>title</code></h4>
+
+<p>The post’s title.</p>
+
+<h4 id="url"><code>url</code></h4>
+
+<p>The post’s URL. If the post has a source link, <code>url</code> emits the source link,
+otherwise it emits the post’s permalink. If you need to determine which is
+which, use the <code>source_link?</code> tag.</p>
+
+<h4 id="permalink"><code>permalink</code></h4>
+
+<p>Emits a permanent link to this file (or at least as permanent as you can hope a
+link to a file is). This always points directly to the post.</p>
+
+<h4 id="sourcelink"><code>source_link</code></h4>
+
+<p>This emits the post’s source link, which is specified with the <code>link</code> attribute
+in your post file.</p>
+
+<h4 id="sourcelink-1"><code>source_link?</code></h4>
+
+<p>Section tag to determine if there is a source link.</p>
+
+<h4 id="content"><code>content</code></h4>
+
+<p>Provides the HTML content of the post. You should wrap this in three curly
+braces rather than the usual two so Mustache doesn’t reformat it. That is, you
+want to use <code>{{{content}}}</code>.</p>
+
+<h4 id="time"><code>time</code></h4>
+
+<p>This lambda functions the same as the above <code>today</code> tag, but emits the
+formatted time of the post.</p>
+
+<h4 id="publicpath"><code>public_path</code></h4>
+
+<p>Emits the public path for this post. This is only really useful for debugging,
+since it points to the local file.</p>
+
+<h4 id="slug"><code>slug</code></h4>
+
+<p>If for some reason you need access to the post slug, this tag provides it.</p>
+
+<h2 id="postarchive-context-tags">PostArchive Context Tags</h2>
+
+<p>As mentioned above, archive tags generally have little utility. They are useful
+only when rendering archive mode pages and if you want to provide links to all
+archives.</p>
+
+<h4 id="year-and-month"><code>year</code> and <code>month</code></h4>
+
+<p>Both of these tags provide the raw year and month numbers for the archive.
+Unlike other date/time tags, these are not lambdas and do not provide specially
+formatted output.</p>
+
+<h4 id="date"><code>date</code></h4>
+
+<p>This is a lambda that formats the <code>PostArchive</code>’s date (the first day of the
+month and year for this context). It works the same as the <code>today</code> tag and
+other formatted date/time tags above.</p>
+
+<h4 id="permalink-1"><code>permalink</code></h4>
+
+<p>The <code>permalink</code> tag emits a permanent link to the archive page for this
+<code>PostArchive</code> context.</p>
+
+<h4 id="open"><code>open?</code></h4>
+
+<p>Sectional tag to determine if this is the current <code>PostArchive</code> context being
+rendered by the <code>Blog</code>. You might use this to de-link or highlight the current
+archive in a list of archive pages.</p>
+
+<h4 id="nextarchive-and-previousarchive"><code>next_archive</code> and <code>previous_archive</code></h4>
+
+<p>These tags both provide access to archives that follow/precede the current
+<code>PostArchive</code> context. These override the <code>next_archive</code> and <code>previous_archive</code>
+tags provided by the <code>Blog</code> context above when used in a <code>PostArchive</code> context.</p>
+</body>
+</html>
