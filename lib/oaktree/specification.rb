@@ -90,7 +90,7 @@ class OakTree
         spec_hash = Psych.load(spec_contents)
         spec_hash.each {
           |key, value|
-          setter_sym = "#{key}=".to_sym
+          setter_sym = :"#{key}="
           if spec.respond_to? setter_sym
             spec.send setter_sym, value
           else

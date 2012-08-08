@@ -163,11 +163,11 @@ class OakTree::PostData
 
     header_hash.each {
       |key, value|
-      setter = "#{key}=".to_sym
-      if self.respond_to?(setter)
-        self.send setter, value.clone().freeze
+      setter_sym = :"#{key}="
+      if self.respond_to?(setter_sym)
+        self.send setter_sym, value
       else
-        raise "Invalid key for header: #{key}."
+        raise "Invalid key/value for header: #{key} => #{value}."
       end
     }
 
