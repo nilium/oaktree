@@ -211,7 +211,7 @@ class OakTree::PostData
 
       unless slug_temp.empty?
         slug_temp.downcase!
-        slug_temp.gsub!(self.class.slug_fix_regexp, @spec.word_separator)
+        slug_temp.gsub!(self.class.slug_fix_regexp, @spec.slug_separator)
       end
     else
       slug_temp = ''

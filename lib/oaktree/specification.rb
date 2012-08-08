@@ -7,14 +7,14 @@ class OakTree
   class Specification
     @@KEY_VALUE_PATTERN = /^\s*(?<key>[\w_]+)\s*:\s*(?<value>.*?)\s*(#|$)/
     @@DEFAULT_DATE_PATH_FORMAT = '%Y/%m/'
-    @@DEFAULT_WORD_SEPARATOR = '_'
+    @@DEFAULT_SLUG_SEPARATOR = '_'
 
     def self.default_date_path_format
       @@DEFAULT_DATE_PATH_FORMAT
     end
 
-    def self.default_word_separator
-      @@DEFAULT_WORD_SEPARATOR
+    def self.default_slug_separator
+      @@DEFAULT_SLUG_SEPARATOR
     end
 
     # The blog's title
@@ -37,7 +37,7 @@ class OakTree
     attr_accessor :date_path_format
     # The separator for words in slugs. May not be whitespace if loaded from a
     # blog_spec file.
-    attr_accessor :word_separator
+    attr_accessor :slug_separator
 
     # Sets the post path (i.e., the subdirectory where posts are stored).
     # Should not have a trailing slash, but should have a beginning slash.
@@ -120,8 +120,8 @@ class OakTree
                 spec.reversed = value.downcase =~ /^(true|1|yes)$/ ? true : false
               when :date_path_format
                 spec.date_path_format = value
-              when :word_separator
-                spec.word_separator = value
+              when :slug_separator
+                spec.slug_separator = value
               else
                 puts "Invalid name for entry in blog_spec: #{line}"
             end
@@ -145,7 +145,7 @@ class OakTree
       self.posts_per_page = 10
       self.reversed = false
       self.date_path_format = self.class.default_date_path_format
-      self.word_separator = self.class.default_word_separator
+      self.slug_separator = self.class.default_slug_separator
 
       yield self if block_given?
 
