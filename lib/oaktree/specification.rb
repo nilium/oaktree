@@ -86,47 +86,16 @@ class OakTree
 
       self.new { |spec|
 
-        File.open(path, 'r') { |io|
-
-          io.each_line { |line|
-            line = line.strip
-
-            next if line.empty? || line.start_with?('#')
-
-            match = line.match @@KEY_VALUE_PATTERN
-
-            if match.nil? then
-              puts "Invalid entry in blog_spec: #{line}"
-              next
-            end
-
-            key = match[:key]
-            value = match[:value]
-
-            case key.to_sym
-              when :title
-                spec.title = value
-              when :description
-                spec.description = value
-              when :base_url
-                spec.base_url = value
-              when :post_path
-                spec.post_path = value
-              when :author
-                spec.author = value
-              when :posts_per_page
-                spec.posts_per_page = value.to_i
-              when :reversed
-                spec.reversed = value.downcase =~ /^(true|yes)$/i ? true : false
-              when :date_path_format
-                spec.date_path_format = value
-              when :slug_separator
-                spec.slug_separator = value
-              else
-                puts "Invalid name for entry in blog_spec: #{line}"
-            end
-          }
-
+        spec_contents = File.open(path, 'r') { |io| io.read }
+        spec_hash = Psych.load(spec_contents)
+        spec_hash.each {
+          |key, value|
+          setter_sym = "#{key}=".to_sym
+          if spec.respond_to? setter_sym
+            spec.send setter_sym, value
+          else
+            raise "Invalid key/value in spec: #{key} => #{value}"
+          end
         }
 
         Dir.chdir(File.dirname(path))
