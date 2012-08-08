@@ -38,6 +38,8 @@ class OakTree
     # The separator for words in slugs. May not be whitespace if loaded from a
     # blog_spec file.
     attr_accessor :slug_separator
+    # The length of the RSS feed in number of posts. Defaults to 20-most-recent.
+    attr_accessor :rss_length
 
     # Sets the post path (i.e., the subdirectory where posts are stored).
     # Should not begin with a slash, but can have a trailing slash if you want.
@@ -115,6 +117,7 @@ class OakTree
       self.reversed = false
       self.date_path_format = self.class.default_date_path_format
       self.slug_separator = self.class.default_slug_separator
+      self.rss_length = 20
 
       yield self if block_given?
 
