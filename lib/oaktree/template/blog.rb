@@ -77,11 +77,11 @@ class OakTree
       ### blog tags
 
       def local_path
-        path = @spec.blog_root + "/public"
+        path = @spec.blog_root + "public/"
         date_format = @spec.date_path_format
 
         if home? && @page_index == 0
-          path << "/index.html"
+          path << "index.html"
         elsif single? || statics?
           path = post.post_data.public_path
         else
@@ -89,15 +89,17 @@ class OakTree
 
           case mode
             when :home
-              path << "/#{@page_index}.html"
+              path << "#{@page_index}.html"
             when :archive
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)
-              path << "/#{archdate.strftime(date_format)}"
+              path << "#{archdate.strftime(date_format)}"
           end
 
           path << 'index.html' if path.end_with? '/'
         end
+
+        puts path
 
         path
       end
@@ -204,7 +206,7 @@ class OakTree
             if @page_index == 1
               blog_url
             else
-              blog_url + @spec.post_path + "/#{@page_index - 1}.html"
+              blog_url + @spec.post_path + "#{@page_index - 1}.html"
             end
           when :archive
             @archive[@page_index - 1].permalink
@@ -218,7 +220,7 @@ class OakTree
 
         case mode
           when :home
-            blog_url + @spec.post_path + "/#{@page_index + 1}.html"
+            blog_url + @spec.post_path + "#{@page_index + 1}.html"
           when :archive
             @archive[@page_index + 1].permalink
           when :single

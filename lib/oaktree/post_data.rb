@@ -182,7 +182,7 @@ class OakTree::PostData
     link_path << @time.strftime(spec.date_path_format)  if kind == :post
     link_path << slug
 
-    self.public_path = "#{root}/public/#{@spec.post_path}#{link_path}/index.html".freeze()
+    self.public_path = "#{root}public/#{link_path}/index.html".freeze()
     self.permalink = "#{url}#{link_path}"
 
     nil

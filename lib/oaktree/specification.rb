@@ -77,7 +77,7 @@ class OakTree
     end
 
     def sources_root
-      @sources_root ||= "#{@blog_root}/source"
+      @sources_root ||= "#{@blog_root}source/"
     end
 
     # Loads a specification from a file.
@@ -118,7 +118,7 @@ class OakTree
 
       yield self if block_given?
 
-      @blog_root = File.expand_path Dir.getwd
+      @blog_root = File.expand_path(Dir.getwd) + '/'
     end
 
     def export_string

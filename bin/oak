@@ -154,7 +154,7 @@ def new_post spec, title
   titleslug = title.gsub(/[^_\w\s]/, '').strip.gsub(/\s+/, '_').downcase
   timeslug = today.strftime '%Y-%m-%d'
 
-  file = "#{spec.blog_root}/source/#{timeslug}_#{titleslug}.md"
+  file = "#{spec.sources_root}#{timeslug}_#{titleslug}.md"
 
   head = <<HEADSTR
 title: #{title}
