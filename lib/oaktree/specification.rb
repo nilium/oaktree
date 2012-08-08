@@ -117,7 +117,7 @@ class OakTree
               when :posts_per_page
                 spec.posts_per_page = value.to_i
               when :reversed
-                spec.reversed = value.downcase =~ /^(true|1|yes)$/ ? true : false
+                spec.reversed = value.downcase =~ /^(true|yes)$/i ? true : false
               when :date_path_format
                 spec.date_path_format = value
               when :slug_separator
