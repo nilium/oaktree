@@ -12,7 +12,7 @@ require 'oaktree/template'
 # The central blog class (also just called a tree from time to time)
 class OakTree
 
-  VERSION = '0.3.1'
+  VERSION = '0.4.0'
 
   @@EMPTY_DIR_ENTRIES = ['.', '..']
 
