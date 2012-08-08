@@ -23,6 +23,7 @@ class OakTree
         @@MODES
       end
 
+      # tag to provide simple URL encoding
       def url_encode
         proc {
           |input|
