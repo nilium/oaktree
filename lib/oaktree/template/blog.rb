@@ -33,7 +33,7 @@ class OakTree
 
       # returns an enumerator for all modes supported by the template
       def modes
-        Blog.modes
+        self.class.modes
       end
 
       # the default template file
