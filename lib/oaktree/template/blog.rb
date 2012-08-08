@@ -3,6 +3,7 @@ require 'date'
 require 'oaktree/template/base'
 require 'oaktree/template/post'
 require 'oaktree/template/post_archive'
+require 'uri'
 
 class OakTree
 
@@ -15,6 +16,13 @@ class OakTree
       # returns an enumerator for all modes supported by the template class
       def self.modes
         @@MODES.each
+      end
+
+      def url_encode
+        proc {
+          |input|
+          render(URI.encode_www_form_component(render(input)))
+        }
       end
 
       # returns an enumerator for all modes supported by the template
