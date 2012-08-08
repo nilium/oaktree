@@ -13,6 +13,7 @@ class OakTree ; end
 #
 class OakTree::PostData
 
+  attr_accessor :source_name
   attr_accessor :source_path
   # The path to the HTML file that's written when compiling the post.
   attr_accessor :public_path
@@ -37,7 +38,7 @@ class OakTree::PostData
   attr_accessor :spec
 
   protected :source_path=, :public_path=, :title=, :link=, :content=,
-            :last_read_time=, :hash=, :spec=, :permalink=
+            :last_read_time=, :hash=, :spec=, :permalink=, :source_name=
 
   # Loads a new post from the source file using the given Specification. The
   # source file should be the full filename of the source file, but without any
@@ -51,6 +52,7 @@ class OakTree::PostData
     self.hash = nil
     self.last_read_time = Time.at(0).to_datetime
 
+    self.source_name = source_name
     self.source_path = File.absolute_path(source_name,
                                           spec.sources_root).freeze()
 
