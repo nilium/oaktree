@@ -17,6 +17,8 @@ class OakTree
         }
       end
       
+      self.template_path = 'template'
+
     end # Base
 
   end # Template
