@@ -107,7 +107,9 @@ class OakTree
         if home? && @page_index == 0
           path << "index.html"
         elsif single? || statics?
-          path = post.post_data.public_path
+          post.post_data.public_path
+        elsif rss_feed?
+          path << 'feeds/rss.xml'
         else
           path << @spec.post_path
 
@@ -122,10 +124,6 @@ class OakTree
 
           path << 'index.html' if path.end_with? '/'
         end
-
-        puts path
-
-        path
       end
 
       def blog_title
@@ -160,6 +158,14 @@ class OakTree
 
       def statics?
         @mode == :statics
+      end
+
+      def rss_feed?
+        @mode == :rss_feed
+      end
+
+      def rss_feed_url
+        "#{@spec.base_url}feeds/rss.xml"
       end
 
       # uses the input as a format string for the first day of the month and year
