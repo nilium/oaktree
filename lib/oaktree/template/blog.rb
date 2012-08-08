@@ -11,12 +11,13 @@ class OakTree
 
     class Blog < Base
 
-      @@MODES = [:home, :archive, :single, :statics].freeze
+      @@MODES = [:home, :archive, :single, :statics, :rss_feed].freeze()
       @@MODE_TEMPLATES = {
         :home => 'template/home.mustache'.freeze(),
         :archive => 'template/archive.mustache'.freeze(),
         :single => 'template/single.mustache'.freeze(),
-        :statics => 'template/statics.mustache'.freeze()
+        :statics => 'template/statics.mustache'.freeze(),
+        :rss_feed => 'template/rss_feed.mustache'.freeze()
       }
 
       def self.modes
@@ -188,6 +189,7 @@ class OakTree
           when :archive ; @archive.length
           when :single ; @posts.length
           when :statics ; @statics.length
+          when :rss_feed ; 1
         end
       end
 
@@ -228,6 +230,7 @@ class OakTree
             @archive[@page_index - 1].permalink
           when :single
             @posts[@page_index - 1].permalink
+          when :rss_feed ; ''
         end
       end
 
@@ -241,6 +244,7 @@ class OakTree
             @archive[@page_index + 1].permalink
           when :single
             @posts[@page_index + 1].permalink
+          when :rss_feed ; ''
         end
       end
 
@@ -284,6 +288,8 @@ class OakTree
 
           when :statics
             [@statics[@page_index]]
+          # should the RSS feed be size-limited at all?
+          when :rss_feed ; @posts
         end
       end
 
