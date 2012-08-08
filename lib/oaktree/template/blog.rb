@@ -185,14 +185,9 @@ class OakTree
               1
             end
 
-          when :archive
-            @archive.length
-
-          when :single
-            @posts.length
-
-          when :statics
-            @statics.length
+          when :archive ; @archive.length
+          when :single ; @posts.length
+          when :statics ; @statics.length
         end
       end
 
