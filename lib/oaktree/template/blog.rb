@@ -12,6 +12,12 @@ class OakTree
     class Blog < Base
 
       @@MODES = [:home, :archive, :single, :statics].freeze
+      @@MODE_TEMPLATES = {
+        :home => 'template/home.mustache'.freeze(),
+        :archive => 'template/archive.mustache'.freeze(),
+        :single => 'template/single.mustache'.freeze(),
+        :statics => 'template/statics.mustache'.freeze()
+      }
 
       # returns an enumerator for all modes supported by the template class
       def self.modes
@@ -30,7 +36,13 @@ class OakTree
         Blog.modes
       end
 
+      # the default template file
       self.template_file = 'template/blog.mustache'
+
+      def self.template_for_mode(mode)
+        tmp = @@MODE_TEMPLATES[mode]
+        (tmp && File.exists?(tmp)) ? tmp : self.class.template_file
+      end
 
       def initialize tree, options = {}
         @tree = tree
@@ -76,6 +88,7 @@ class OakTree
       def mode= mode
         raise "Invalid mode" unless @@MODES.include? mode
         @mode = mode
+        self.template_file = self.class.template_for_mode(mode)
       end
 
       def mode
