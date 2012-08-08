@@ -226,11 +226,8 @@ class OakTree
             else
               blog_url + @spec.post_path + "#{@page_index - 1}.html"
             end
-          when :archive
-            @archive[@page_index - 1].permalink
-          when :single
-            @posts[@page_index - 1].permalink
-          when :rss_feed ; ''
+          when :archive ; @archive[@page_index - 1].permalink
+          when :single ; @posts[@page_index - 1].permalink
         end
       end
 
@@ -238,13 +235,9 @@ class OakTree
         return "" unless has_previous?
 
         case mode
-          when :home
-            blog_url + @spec.post_path + "#{@page_index + 1}.html"
-          when :archive
-            @archive[@page_index + 1].permalink
-          when :single
-            @posts[@page_index + 1].permalink
-          when :rss_feed ; ''
+          when :home ; blog_url + @spec.post_path + "#{@page_index + 1}.html"
+          when :archive ; @archive[@page_index + 1].permalink
+          when :single ; @posts[@page_index + 1].permalink
         end
       end
 
@@ -280,14 +273,9 @@ class OakTree
               @posts[0..-1]
             end
 
-          when :archive
-            @archive[@page_index].posts
-
-          when :single
-            [@posts[@page_index]]
-
-          when :statics
-            [@statics[@page_index]]
+          when :archive ; @archive[@page_index].posts
+          when :single ; [@posts[@page_index]]
+          when :statics ; [@statics[@page_index]]
           # should the RSS feed be size-limited at all?
           when :rss_feed ; @posts
         end
@@ -297,8 +285,8 @@ class OakTree
       # only works in single mode.
       def post
         case mode
-        when :single then @posts[@page_index]
-        when :statics then @statics[@page_index]
+        when :single ; @posts[@page_index]
+        when :statics ; @statics[@page_index]
         end
       end
 
