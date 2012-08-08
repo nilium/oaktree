@@ -82,22 +82,18 @@ class OakTree
 
         if home? && @page_index == 0
           path << "/index.html"
+        elsif single? || statics?
+          path = post.post_data.public_path
         else
           path << @spec.post_path
 
           case mode
             when :home
               path << "/#{@page_index}.html"
-            when :single
-              data = post.post_data
-              path << "/#{data.time.strftime(date_format)}#{data.slug}/"
             when :archive
               arch = @archive[@page_index]
               archdate = DateTime.new(arch.year, arch.month, 1)
               path << "/#{archdate.strftime(date_format)}"
-            when :statics
-              data = post.post_data
-              path << "/#{data.slug}/"
           end
 
           path << 'index.html' if path.end_with? '/'

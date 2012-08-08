@@ -32,7 +32,9 @@ class OakTree
       end
 
       def permalink
-        @spec.base_url + @spec.post_path + "/#{year}/#{month}/"
+        date_format = @spec.date_path_format
+        formatted_date = DateTime.new(year, month, 1).strftime(date_format)
+        "#{@spec.base_url}#{@spec.post_path}#{formatted_date}"
       end
 
       def open?

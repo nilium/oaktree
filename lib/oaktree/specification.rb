@@ -40,13 +40,14 @@ class OakTree
     attr_accessor :slug_separator
 
     # Sets the post path (i.e., the subdirectory where posts are stored).
-    # Should not have a trailing slash, but should have a beginning slash.
+    # Should not begin with a slash, but can have a trailing slash if you want.
+    # If there is no trailing slash, it will be part of the filename up to a
+    # a point.
     def post_path= path
       raise "post_path provided is nil" if path.nil?
       raise "post_path provided is not a string" unless path.kind_of?(String)
 
-      @post_path = path.chomp('/')
-      @post_path = "/#{@post_path}" if ! @post_path.empty? && ! @post_path.start_with?('/')
+      @post_path = path.clone().freeze()
     end
 
     # Gets the post path (i.e., the subdirectory where posts are stored).
@@ -62,13 +63,12 @@ class OakTree
       end
     end
 
-    # Sets the base URL of the blog (i.e., http://localhost/blog) - should not
-    # have a trailing slash.
+    # Sets the base URL of the blog (i.e., http://localhost/blog) - should have
+    # a trailing slash.
     def base_url= url
-      raise "base_url provided is nil" if url.nil?
-      raise "base_url provided is not a string" unless url.kind_of?(String)
-
-      @base_url = url.chomp('/')
+      url = String.new(url)
+      url << '/'  unless url.end_with? '/'
+      @base_url = url.freeze()
     end
 
     # Gets the base URL of the blog (i.e., http://localhost/blog).
@@ -77,7 +77,7 @@ class OakTree
     end
 
     def sources_root
-      @sources_root ||= "#{@blog_root}/sources"
+      @sources_root ||= "#{@blog_root}/source"
     end
 
     # Loads a specification from a file.
@@ -109,7 +109,7 @@ class OakTree
       self.title = ''
       self.description = ''
       self.base_url = ''
-      self.post_path = '/post'
+      self.post_path = 'post/'
       self.author = ''
       self.posts_per_page = 10
       self.reversed = false

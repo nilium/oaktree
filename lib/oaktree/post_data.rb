@@ -175,15 +175,15 @@ class OakTree::PostData
 
     # Set the public HTML path and the permalink now that we have enough info
     # about the post.
-    root = @spec.blog_root
-    url = @spec.base_url
+    root = spec.blog_root
+    url = spec.base_url
 
-    link_path = ""
+    link_path = String.new(spec.post_path)
     link_path << @time.strftime(spec.date_path_format)  if kind == :post
     link_path << slug
 
-    self.public_path = "#{root}/public/#{link_path}/index.html".freeze()
-    self.permalink = "#{url}/#{link_path}"
+    self.public_path = "#{root}/public/#{@spec.post_path}#{link_path}/index.html".freeze()
+    self.permalink = "#{url}#{link_path}"
 
     nil
   end # load_header

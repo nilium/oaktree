@@ -64,9 +64,9 @@ class OakTree
         needs_update = force_build || mtime.nil?
 
         if ! needs_update
-          needs_update = blog_template.posts.inject(false) { |memo, post|
-            data = post.post_data
-            memo || mtime < data.file_mtime
+          needs_update = blog_template.posts.any? {
+            |post|
+            mtime < File.mtime(post.post_data.source_path)
           }
 
           if ! needs_update
@@ -109,22 +109,35 @@ class OakTree
   private
 
   def sync_posts
-    entries = Dir.glob("#{@spec.blog_root}/source/**/*.md")
-    altered = false
-    entries.each { |entry|
-      next if @posts.index { |post| post.source_path === entry }
+    spec = self.blogspec
+    entries = Dir.foreach(blogspec.sources_root).reject { |e| e.start_with? '.' }
+    postnames = @posts.map(&:source_name)
 
-      @posts << PostData.new(entry, blogspec)
-      altered = true
+    new_posts = entries.reject {
+      |entry|
+      postnames.include? entry
+    }.map {
+      |entry|
+      PostData.new entry, spec
     }
 
-    return unless altered
+    if ! new_posts.empty?
+      @posts.each(&:sync_changes).concat(new_posts)
 
-    @posts.sort! { |left, right|
-      @spec.reversed ? left.time <=> right.time : right.time <=> left.time
-    }
+      if spec.reversed
+        @posts.sort! {
+          |left, right|
+          left.time <=> right.time
+        }
+      else
+        @posts.sort! {
+          |left, right|
+          right.time <=> left.time
+        }
+      end
+    end
 
-    return self
+    self
   end
 
 end
