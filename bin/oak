@@ -106,6 +106,26 @@ BLOG_TEMPLATE = <<EOT
 </html>
 EOT
 
+RSS_FEED_TEMPLATE = <<EOT
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:content"http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>{{blog_title}}</title>
+    <link>{{blog_url}}</link>
+    <description>{{blog_description}}</description>
+    <pubDate>{{#today}}%a, %d %b %Y %T %z{{/today}}</pubDate>
+    <docs>http://www.rssboard.org/rss-2-0-1</docs>
+    {{#posts}}<item>
+      <title>{{title}}</title>
+      <link>{{permalink}}</link>
+      <author>{{blog_author}}</author>
+      <content:encoded><![CDATA[{{{content}}}]]></content:encoded>
+    </item>{{/posts}}
+  </channel>
+</rss>
+EOT
+
 # Commands
 
 # Generate a new blog_spec and create 'source' and 'public' directories under
@@ -126,6 +146,7 @@ def init_blog directory
 
     File.open('blog_spec', 'w') { |io| io.write OakTree::Specification.new.export_string }
     File.open('template/blog.mustache', 'w') { |io| io.write BLOG_TEMPLATE }
+    File.open('template/rss_feed.mustache', 'w') { |io| io.write RSS_FEED_TEMPLATE }
   }
 end
 
