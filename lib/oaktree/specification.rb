@@ -76,6 +76,10 @@ class OakTree
       @base_url
     end
 
+    def sources_root
+      @sources_root ||= "#{@blog_root}/sources"
+    end
+
     # Loads a specification from a file.
     def self.from_file(path)
       raise "Spec file does not exist" unless File.exists? path
