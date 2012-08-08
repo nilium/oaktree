@@ -19,9 +19,8 @@ class OakTree
         :statics => 'template/statics.mustache'.freeze()
       }
 
-      # returns an enumerator for all modes supported by the template class
       def self.modes
-        @@MODES.each
+        @@MODES
       end
 
       def url_encode
