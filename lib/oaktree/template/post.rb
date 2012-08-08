@@ -12,7 +12,6 @@ class OakTree
 
       def initialize spec, post
         @post = post
-        @mtime = @post.last_modified
         @content = nil
         @spec = spec
       end
@@ -55,7 +54,7 @@ class OakTree
       end
 
       def content
-        if @content.nil? || @mtime < @post.last_modified
+        if @content.nil?
           document = ::Kramdown::Document.new(@post.content)
           @content, warnings = ::OakTree::Kramdown::OakHtml.convert(document.root, :auto_id_prefix => @post.time.strftime('%Y_%m_%d_'))
           puts warnings unless warnings.empty?
