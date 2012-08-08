@@ -57,6 +57,7 @@ class OakTree
         }.select(&:published?)
 
         @posts = @postdata.select(&:post?)
+        @sorted_posts = @posts.sort_by { |p| p.post_data.time }
         @statics = @postdata.select(&:static?)
 
         @posts.freeze
@@ -276,8 +277,11 @@ class OakTree
           when :archive ; @archive[@page_index].posts
           when :single ; [@posts[@page_index]]
           when :statics ; [@statics[@page_index]]
-          # should the RSS feed be size-limited at all?
-          when :rss_feed ; @posts
+
+          when :rss_feed
+            rss_length = @spec.rss_length - 1
+            rss_length = -1  if rss_length < -1
+            @sorted_posts[0..(rss_length - 1)]
         end
       end
 
