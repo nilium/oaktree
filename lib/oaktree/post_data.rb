@@ -124,8 +124,6 @@ class OakTree::PostData
     load_header source_split[0]
     self.content = source_split[2]
 
-    puts self.inspect
-
     self
   end # sync_changes
 
