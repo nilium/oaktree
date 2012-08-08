@@ -48,7 +48,7 @@ BLOG_TEMPLATE = <<EOT
 <body>
 
   <div id="header">
-    <h1 id="blog-title"><a href="{{blog_url}}/index.html">{{blog_title}}</a></h1>
+    <h1 id="blog-title"><a href="{{blog_url}}index.html">{{blog_title}}</a></h1>
     <p>
       <span class="blog-description">{{blog_description}}<br/></span>
       <span class="blog-byline">By {{blog_author}}</span>
