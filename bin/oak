@@ -108,8 +108,7 @@ EOT
 
 RSS_FEED_TEMPLATE = <<EOT
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-     xmlns:content"http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0">
   <channel>
     <title>{{blog_title}}</title>
     <link>{{blog_url}}</link>
@@ -119,8 +118,7 @@ RSS_FEED_TEMPLATE = <<EOT
     {{#posts}}<item>
       <title>{{title}}</title>
       <link>{{permalink}}</link>
-      <author>{{blog_author}}</author>
-      <content:encoded><![CDATA[{{{content}}}]]></content:encoded>
+      <description><![CDATA[{{{content}}}]]></description>
     </item>{{/posts}}
   </channel>
 </rss>
