@@ -84,6 +84,7 @@ class OakTree
           new_files << pretty_path
         end
 
+        r = nil
         File.open(path, 'w') {
           |io|
           io.write blog_template.render
