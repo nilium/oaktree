@@ -42,7 +42,7 @@ class OakTree
 
       def self.template_for_mode(mode)
         tmp = @@MODE_TEMPLATES[mode]
-        tpath = "#{self.template_path}/#{tmp}.mustache"
+        tpath = File.expand_path("#{self.template_path}/#{tmp}.mustache")
         (tmp && File.exists?(tpath)) ? tmp : self.template_name
       end
 
@@ -50,7 +50,7 @@ class OakTree
         @tree = tree
         @spec = tree.blogspec
         @page_index = 0
-        @mode = options[:mode] || :home
+        self.mode = options[:mode] || :home
         raise "Invalid mode" unless @@MODES.include? @mode
 
         @postdata = tree.posts.map { |post|
@@ -58,7 +58,7 @@ class OakTree
         }.select(&:published?)
 
         @posts = @postdata.select(&:post?)
-        @sorted_posts = @posts.sort_by { |p| p.post_data.time }
+        @sorted_posts = @posts.sort_by { |p| p.post_data.time }.reverse!
         @statics = @postdata.select(&:static?)
 
         @posts.freeze
@@ -90,6 +90,7 @@ class OakTree
 
       def mode= mode
         raise "Invalid mode" unless @@MODES.include? mode
+        return mode  if @mode == mode
         @mode = mode
         self.template_name = self.class.template_for_mode(mode)
       end
@@ -107,7 +108,7 @@ class OakTree
         if home? && @page_index == 0
           path << "index.html"
         elsif single? || statics?
-          post.post_data.public_path
+          return post.post_data.public_path
         elsif rss_feed?
           path << 'feeds/rss.xml'
         else
@@ -124,6 +125,8 @@ class OakTree
 
           path << 'index.html' if path.end_with? '/'
         end
+
+        path
       end
 
       def blog_title
@@ -173,9 +176,7 @@ class OakTree
       # this returns nil if not in archive mode.
       def archive_date
         return nil unless archive?
-
-        arch = @archive[@page_index]
-        proc_for_datetime(DateTime.new(arch.year, arch.month, 1))
+        proc_for_datetime(@archive[@page_index])
       end
 
       def statics
@@ -207,6 +208,9 @@ class OakTree
       end
 
       def page= page_num
+        @next_url_cache = nil
+        @prev_url_cache = nil
+        @posts_cache = nil
         @page_index = (page_num - 1)
       end
 
@@ -227,7 +231,7 @@ class OakTree
       def next_url
         return "" unless has_next?
 
-        case mode
+        @next_url_cache ||= case mode
           when :home
             if @page_index == 1
               blog_url
@@ -242,7 +246,7 @@ class OakTree
       def previous_url
         return "" unless has_previous?
 
-        case mode
+        @prev_url_cache ||= case mode
           when :home ; blog_url + @spec.post_path + "#{@page_index + 1}.html"
           when :archive ; @archive[@page_index + 1].permalink
           when :single ; @posts[@page_index + 1].permalink
@@ -265,7 +269,7 @@ class OakTree
       # returns all visible posts
       # note: visible means whatever is in the current page
       def posts
-        case mode
+        @posts_cache ||= case mode
           when :home
             if @spec.posts_per_page > 0
               page_start = @page_index * @spec.posts_per_page

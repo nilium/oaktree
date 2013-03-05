@@ -7,7 +7,7 @@ class OakTree
   module Template
 
     class PostArchive < Base
-      self.template_file = "template/postarchive.mustache"
+      self.template_name = "postarchive"
 
       attr_accessor :year
       attr_accessor :month
@@ -23,18 +23,23 @@ class OakTree
         @posts = posts
         @spec = spec
         @blog = blog
+        @datetime = DateTime.new(year, month, 1)
+        formatted_date = @datetime.strftime(@spec.date_path_format)
+        @permalink = "#{@spec.base_url}#{@spec.post_path}#{formatted_date}"
 
         yield self if block_given?
       end
 
       def date
-        proc_for_datetime(DateTime.new(year, month, 1))
+        proc_for_datetime(@datetime)
+      end
+
+      def datetime
+        @datetime
       end
 
       def permalink
-        date_format = @spec.date_path_format
-        formatted_date = DateTime.new(year, month, 1).strftime(date_format)
-        "#{@spec.base_url}#{@spec.post_path}#{formatted_date}"
+        @permalink
       end
 
       def open?

@@ -159,12 +159,17 @@ class OakTree::PostData
   # uses Psych to parse the header as YAML.
   #
   def load_header(header_source)
-    header_hash = Psych.load(header_source)
+    begin
+      header_hash = Psych.load(header_source)
+    rescue Psych::SyntaxError => ex
+      puts "Failed to parse header for #{@source_name}"
+      raise
+    end
 
     header_hash.each {
       |key, value|
-      setter_sym = :"#{key}="
-      if self.respond_to?(setter_sym)
+      setter_sym = "#{key.to_s}=".to_sym
+      if self.respond_to?(setter_sym, true)
         self.send setter_sym, value
       else
         raise "Invalid key/value for header: #{key} => #{value}."

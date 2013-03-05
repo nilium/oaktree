@@ -8,12 +8,15 @@ class OakTree
 
     class Post < Base
 
-      self.template_file = 'template/post.mustache'
+      self.template_name = 'post'
 
       def initialize spec, post
         @post = post
         @content = nil
         @spec = spec
+        document = ::Kramdown::Document.new(@post.content)
+        @content, warnings = ::OakTree::Kramdown::OakHtml.convert(document.root, :auto_id_prefix => @post.time.strftime('%Y_%m_%d_'))
+        puts warnings unless warnings.empty?
       end
 
       def post_data
@@ -54,12 +57,6 @@ class OakTree
       end
 
       def content
-        if @content.nil?
-          document = ::Kramdown::Document.new(@post.content)
-          @content, warnings = ::OakTree::Kramdown::OakHtml.convert(document.root, :auto_id_prefix => @post.time.strftime('%Y_%m_%d_'))
-          puts warnings unless warnings.empty?
-        end
-
         @content
       end
 
