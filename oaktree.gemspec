@@ -9,14 +9,14 @@ EOD
 
 Gem::Specification.new { |spec|
   spec.name        = 'oaktree'
-  spec.version     = '0.4.4'
+  spec.version     = '0.4.5'
   spec.date        = '2012-07-01'
   spec.summary     = 'OakTree static HTML blog'
   spec.description = DESCRIPTION
-  spec.authors     = ['Noel Cower']
+  spec.authors     = ['Noel Raymond Cower']
   spec.licenses    = ['WTFPL-2', 'MIT']
   spec.email       = 'ncower@gmail.com'
-  spec.homepage    = 'http://spifftastic.net/oaktree/'
+  spec.homepage    = 'https://github.com/nilium/oaktree/'
   spec.executables << 'oak'
   spec.files = FileList['lib/**/*.rb',
                         'bin/*',
