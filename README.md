@@ -1,5 +1,9 @@
 # OakTree
 
+## CAUTION: PROJECT NOT MAINTAINED
+
+As of 2015, I've ceased using OakTree in favor of [Hugo](https://gohugo.io). If you were for any reason using OakTree, I recommend checking out Hugo, as it accomplishes all of the same goals and a few more without being slow nor difficult to maintain.
+
 ## What in the nine hells is OakTree?
 
 OakTree is an odd little static HTML blog gem thingy written by Noel R. Cower (hereinafter "yours truly" or just "I," because writing in the third person about my work is annoying).  It is designed to fit my purposes - which is to say a very simple blog with very simple needs (has text, posts, some links, and my template).  At present, it works moderately well at generating simple blogs – that is, HTML-only, no RSS feeds yet.
